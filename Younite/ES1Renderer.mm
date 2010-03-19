@@ -8,6 +8,7 @@
 
 #import "ES1Renderer.h"
 #import "mo_gfx.h"
+#import "mo_touch.h"
 
 // global
 GLuint g_texture[1];
@@ -148,6 +149,71 @@ GLfloat    *sphereTriangleFanNormals;
 GLfloat    *sphereTriangleFanTex;
 GLuint      sphereTriangleFanVertexCount;
 
+float g_xrot = 0;
+float g_yrot = 0;
+float g_zoom = 0;
+
+UITouch *g_touch1, *g_touch2;
+UITouch *prev_touch = nil;
+CGPoint prev_pos;
+double g_distance = 0;
+void touchCallback(NSSet *allTouches, UIView * view, const std::map<int, MoTouchTrack> & touchPts, void * data) {	
+    NSMutableSet *touches = [NSMutableSet set];
+    // remove ended touches
+    for (UITouch *t in allTouches) {
+        if ([t phase] != UITouchPhaseCancelled && [t phase] != UITouchPhaseEnded) {
+            [touches addObject:t];
+        }
+    }
+    
+	long count = [touches count];
+//    ES1Renderer *r = (ES1Renderer *)data;
+    
+    if (count == 0) {
+        [prev_touch release];
+        prev_touch = nil;
+        g_touch1 = nil;
+        g_touch2 = nil;
+        g_distance = 0;
+    } else if (count == 1) {
+        UITouch *touch = [touches anyObject];
+        CGPoint pos = [touch locationInView:view];
+        if (touch == prev_touch) {
+            g_xrot += (pos.x - prev_pos.x)*0.3;
+            g_yrot += (pos.y - prev_pos.y)*0.3;
+            prev_pos = pos;
+        } else {
+            [prev_touch release];
+            prev_touch = [touch retain];
+            prev_pos = pos;
+        }
+    } else if (count == 2) {
+        UITouch *touch1 = [[touches allObjects] objectAtIndex:0];
+        UITouch *touch2 = [[touches allObjects] objectAtIndex:1];
+        
+        CGPoint pt1 = [touch1 locationInView:view];
+        CGPoint pt2 = [touch2 locationInView:view];        
+        double distance = sqrt(pow(pt1.x-pt2.x,2) + pow(pt1.y-pt2.y,2));
+        
+        if ([touches containsObject:g_touch1] && [touches containsObject:g_touch2]) {
+            if (distance < g_distance) {
+                if (g_zoom < 3) {
+                    g_zoom += 0.01*(g_distance-distance);
+                }
+            } else {
+                if (g_zoom > -3) {
+                    g_zoom -= 0.01*(distance-g_distance);
+                }
+            }
+            g_distance = distance;
+        } else {
+            g_touch1 = touch1;
+            g_touch2 = touch2;
+            g_distance = distance;
+        }
+    }
+}
+
 GLfloat rand2f( float a, float b )
 {
     GLfloat diff = b - a;
@@ -196,6 +262,8 @@ void draw() {
 //        1, 0
 //    };
     
+//    MoGfx::lookAt(6*sin(g_yrot)*cos(g_xrot), 6*sin(g_yrot)*sin(g_xrot), 6*cos(g_yrot), 0, 0, 0, 0, 1, 0 );
+    
     // clear
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -207,12 +275,14 @@ void draw() {
 //        glTranslatef( g_entities[i].loc.x, g_entities[i].loc.y, g_entities[i].loc.z );
         
         // rotate
-    //    glRotatef(180, 1, 0, 0);
-        glRotatef(d, 1, 0, 0);
-        d += 0.5;
+        glRotatef(-50+g_yrot, 1, 0, 0);
+        glRotatef(110+g_xrot, 0, 0, 1);
+//        glRotatef(g_xrot, 0, 0, 1);
+//        glRotatef(g_yrot, 1, 0, 0);
+   //     d += 0.5;
         
         // scale
-        glScalef(4, 4, 4);
+        glScalef(4+g_zoom, 4+g_zoom, 4+g_zoom);
         
         // vertex
 //        glVertexPointer(3, GL_FLOAT, 0, g_globe);
@@ -299,6 +369,8 @@ void draw() {
     
     getSolidSphere(&sphereTriangleStripVertices, &sphereTriangleStripNormals, &sphereTriangleStripTex, &sphereTriangleStripVertexCount, &sphereTriangleFanVertices, &sphereTriangleFanNormals, &sphereTriangleFanTex, &sphereTriangleFanVertexCount, 0.5, 50, 50);
     
+    MoTouch::addCallback( touchCallback, self );
+    
     // init entities
     for( int i = 0; i < NUM_ENTITIES; i++ )
     {
@@ -335,7 +407,7 @@ void draw() {
     
     glMatrixMode(GL_PROJECTION);
     // perspective projection
-    MoGfx::perspective( 70, 320./411., 1, 100 );
+    MoGfx::perspective( 70, 320./411., .01, 100 );
     
     glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
