@@ -11,8 +11,13 @@
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
+struct Message {
+    int cause;
+    CGPoint position;
+};
+
 @interface ES1Renderer : NSObject <ESRenderer>
-{
+{    
 @private
 	EAGLContext *context;
 	

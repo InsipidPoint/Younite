@@ -9,10 +9,12 @@
 #import "ES1Renderer.h"
 #import "mo_gfx.h"
 #import "mo_touch.h"
+#import <vector>
+
+using namespace std;
 
 // global
 GLuint g_texture[1];
-#define NUM_ENTITIES 64
 
 // =========================================================
 void getSolidSphere(GLfloat **triangleStripVertexHandle,
@@ -73,9 +75,6 @@ void getSolidSphere(GLfloat **triangleStripVertexHandle,
         triangleFanNormals[i*3] /= mag;
         triangleFanNormals[i*3+1] /= mag;
         triangleFanNormals[i*3+2] /= mag;
-        
-//        triangleFanTex[i*2] = asin(triangleFanNormals[i*3])/M_PI + 0.5;
-//        triangleFanTex[i*2+1] = asin(triangleFanNormals[i*3+1])/M_PI + 0.5;
     }
     
     // Calculate the triangle strip for the sphere body
@@ -125,9 +124,6 @@ void getSolidSphere(GLfloat **triangleStripVertexHandle,
         triangleStripNormals[i*3] /= mag;
         triangleStripNormals[i*3+1] /= mag;
         triangleStripNormals[i*3+2] /= mag;
-        
-//        triangleStripTex[i*2] = asin(triangleStripNormals[i*3])/M_PI + 0.5;
-//        triangleStripTex[i*2+1] = asin(triangleStripNormals[i*3+1])/M_PI + 0.5;
     }
     
     *triangleStripVertexHandle = triangleStripVertices;
@@ -214,107 +210,80 @@ void touchCallback(NSSet *allTouches, UIView * view, const std::map<int, MoTouch
     }
 }
 
-GLfloat rand2f( float a, float b )
-{
-    GLfloat diff = b - a;
-    return a + ((GLfloat)rand() / RAND_MAX)*diff;
-}
-
-class Entity
-{
-public:
-    Entity() { bounce = 0.0f; }
-    
-public:
-    Vector3D loc;
-    Vector3D ori;
-    Vector3D sca;
-    Vector3D vel;
-    Vector3D col;
-    
-    GLfloat bounce;
-    GLfloat bounce_rate;
-};
-
-Entity g_entities[NUM_ENTITIES];
+vector<Message> messages;
 
 // draw
 double d = 0;
 void draw() {
-//    static const GLfloat squareVertices[] = {
-//        -0.5f,  -0.5f,
-//        0.5f,  -0.5f,
-//        -0.5f,   0.5f,
-//        0.5f,   0.5f,
-//    };
-//    
-//    static const GLfloat normals[] = {
-//        0, 0, 1,
-//        0, 0, 1,
-//        0, 0, 1,
-//        0, 0, 1
-//    };
-//    
-//    static const GLfloat texCoords[] = {
-//        0, 1,
-//        1, 1,
-//        0, 0,
-//        1, 0
-//    };
+    static const GLfloat squareVertices[] = {
+        -0.5f,  -0.5f,
+        0.5f,  -0.5f,
+        -0.5f,   0.5f,
+        0.5f,   0.5f,
+    };
     
-//    MoGfx::lookAt(6*sin(g_yrot)*cos(g_xrot), 6*sin(g_yrot)*sin(g_xrot), 6*cos(g_yrot), 0, 0, 0, 0, 1, 0 );
+    static const GLfloat normals[] = {
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1,
+        0, 0, 1
+    };
+    
+    static const GLfloat texCoords[] = {
+        0, 1,
+        1, 1,
+        0, 0,
+        1, 0
+    };
     
     // clear
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
-    // for each entity
-        glPushMatrix();
-        
-        // translate
-//        glTranslatef( g_entities[i].loc.x, g_entities[i].loc.y, g_entities[i].loc.z );
-        
-        // rotate
-        glRotatef(-50+g_yrot, 1, 0, 0);
-        glRotatef(110+g_xrot, 0, 0, 1);
-//        glRotatef(g_xrot, 0, 0, 1);
-//        glRotatef(g_yrot, 1, 0, 0);
-   //     d += 0.5;
+    // rotate
+    glRotatef(-50+g_yrot, 1, 0, 0);
+    glRotatef(110+g_xrot, 0, 0, 1);
+    
+    // globe
+    glPushMatrix();
+        glEnable( GL_TEXTURE_2D );
+    
+        glColor4f(1, 1, 1, 1);
         
         // scale
         glScalef(4+g_zoom, 4+g_zoom, 4+g_zoom);
         
         // vertex
-//        glVertexPointer(3, GL_FLOAT, 0, g_globe);
-    glEnableClientState(GL_VERTEX_ARRAY );
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        
-        // color
-    //    glColor4f(1.0, 0, 0, 1);
+        glEnableClientState(GL_VERTEX_ARRAY );
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     
-    glVertexPointer(3, GL_FLOAT, 0, sphereTriangleFanVertices);
-    glNormalPointer(GL_FLOAT, 0, sphereTriangleFanNormals);
-    glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleFanTex);
-    glDrawArrays(GL_LINE_STRIP, 0, sphereTriangleFanVertexCount);
+        glVertexPointer(3, GL_FLOAT, 0, sphereTriangleFanVertices);
+        glNormalPointer(GL_FLOAT, 0, sphereTriangleFanNormals);
+        glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleFanTex);
+        glDrawArrays(GL_LINE_STRIP, 0, sphereTriangleFanVertexCount);
+        
+        glVertexPointer(3, GL_FLOAT, 0, sphereTriangleStripVertices);
+        glNormalPointer(GL_FLOAT, 0, sphereTriangleStripNormals);
+        glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleStripTex);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereTriangleStripVertexCount);
+        
+        glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
     
-    glVertexPointer(3, GL_FLOAT, 0, sphereTriangleStripVertices);
-    glNormalPointer(GL_FLOAT, 0, sphereTriangleStripNormals);
-    glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleStripTex);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereTriangleStripVertexCount);
-        
-//        // normal
-//        glNormalPointer( GL_FLOAT, 0, g_normal );
-//        glEnableClientState( GL_NORMAL_ARRAY );
-//        
-        // texture coordinate
-        
-        
-        
-        // triangle strip
-//        glDrawArrays( GL_TRIANGLE_STRIP, 0, g_globe_pts);
-        
-        glPopMatrix();
+//    for (int i = 0; i < messages.size(); i++) {    
+    glPushMatrix();
+    glColor4f(1.0, 0, 0, 1);
+    glRotatef(-122.166077, 0, 0, 1);
+    glRotatef(90-37.424107, 1, 0, 0);
+    glTranslatef(0, 0, 2.0+g_zoom/2.0);
+    glScalef(0.1, 0.1, 0.1);
+    glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glPopMatrix();
+//    }
 }
 
 
@@ -373,26 +342,6 @@ void draw() {
     
     MoTouch::addCallback( touchCallback, self );
     
-    // init entities
-    for( int i = 0; i < NUM_ENTITIES; i++ )
-    {
-        g_entities[i].loc.x = rand2f( -1, 1 );
-        g_entities[i].loc.y = rand2f( -1.5, 1.5 );
-        g_entities[i].loc.z = rand2f( -4, 4 );
-        
-        g_entities[i].ori.z = rand2f( 0, 180 );
-        
-        g_entities[i].col.x = rand2f( 0, 1 );
-        g_entities[i].col.y = rand2f( 0, 1 );
-        g_entities[i].col.z = rand2f( 0, 1 );
-        
-        g_entities[i].sca.x = rand2f( .5, 1 );
-        g_entities[i].sca.y = rand2f( 1, 1 );
-        g_entities[i].sca.z = rand2f( .5, 1 );
-        
-        g_entities[i].bounce_rate = rand2f( .25, .5 );
-    }
-    
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://youniteapp.appspot.com/everything"]];
     [[NSURLConnection connectionWithRequest:request delegate:self] retain];
 	return self;
@@ -445,6 +394,45 @@ void draw() {
     return YES;
 }
 
+- (void)parseMessages:(NSString*)data {
+    messages.clear();
+    
+    while (1) {
+        NSRange r = [data rangeOfString:@"<Message>"];
+        if (r.location == NSNotFound) {
+            break;
+        }
+        
+        Message m;
+        
+        NSRange r2 = [data rangeOfString:@"</Message>"];
+        NSRange r3 = NSMakeRange(r.location+r.length, r2.location - r.location-r.length);
+        NSString *message = [data substringWithRange:r3];
+        
+        NSRange r4 = [message rangeOfString:@"<Cause>"];
+        NSRange r5 = [message rangeOfString:@"</Cause>"];
+        NSRange r6 = NSMakeRange(r4.location+r4.length, r5.location - r4.location-r4.length);
+        NSString *cause = [message substringWithRange:r6];
+        
+        NSRange r7 = [message rangeOfString:@"<Location>"];
+        NSRange r8 = [message rangeOfString:@"</Location>"];
+        NSRange r9 = NSMakeRange(r7.location+r7.length, r8.location - r7.location-r7.length);
+        NSString *location = [message substringWithRange:r9];
+        NSArray *latlong = [location componentsSeparatedByString:@","];
+        
+        m.cause = [cause hash]%4;
+        m.position.x = [[latlong objectAtIndex:0] floatValue];
+        m.position.y = [[latlong objectAtIndex:1] floatValue];
+        
+        messages.push_back(m);
+        
+        NSLog(@"%@, %d, (%f,%f)", cause, m.cause, m.position.x, m.position.y);
+        
+        data = [data substringWithRange:NSMakeRange(r2.location+r2.length, [data length]-r2.location-r2.length)];
+//        NSLog(data);
+    }
+}
+
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
 	[responseData setLength:0];
 }
@@ -463,10 +451,10 @@ void draw() {
     
 	//NSLog(@"Finished Connection %d",connection.tag);
 //	[connection release];
-	NSString * message =  [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
+	NSString *data =  [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
 
-    
-    NSLog(message);
+    NSLog(data);
+    [self parseMessages:data];
     
     [connection release];
 	//NSLog(rsltStr);
