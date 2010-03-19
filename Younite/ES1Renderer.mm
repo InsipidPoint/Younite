@@ -196,13 +196,13 @@ void touchCallback(NSSet *allTouches, UIView * view, const std::map<int, MoTouch
         double distance = sqrt(pow(pt1.x-pt2.x,2) + pow(pt1.y-pt2.y,2));
         
         if ([touches containsObject:g_touch1] && [touches containsObject:g_touch2]) {
-            if (distance < g_distance) {
+            if (distance > g_distance) {
                 if (g_zoom < 3) {
-                    g_zoom += 0.01*(g_distance-distance);
+                    g_zoom += 0.01*(distance-g_distance);
                 }
             } else {
                 if (g_zoom > -3) {
-                    g_zoom -= 0.01*(distance-g_distance);
+                    g_zoom -= 0.01*(g_distance-distance);
                 }
             }
             g_distance = distance;
@@ -332,6 +332,8 @@ void draw() {
             [self release];
             return nil;
         }
+        
+        responseData = [[NSMutableData alloc] init];
 		
 		// Create default framebuffer object. The backing will be allocated for the current layer in -resizeFromLayer
 		glGenFramebuffersOES(1, &defaultFramebuffer);
@@ -391,6 +393,8 @@ void draw() {
         g_entities[i].bounce_rate = rand2f( .25, .5 );
     }
     
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://youniteapp.appspot.com/everything"]];
+    [[NSURLConnection connectionWithRequest:request delegate:self] retain];
 	return self;
 }
 
@@ -441,6 +445,33 @@ void draw() {
     return YES;
 }
 
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	[responseData setLength:0];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+	[responseData appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+ //   [connection release];
+	//label.text = [NSString stringWithFormat:@"Connection failed: %@", [error description]];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+	//NSLog(@"Finished Connection %d",connection.tag);
+//	[connection release];
+	NSString * message =  [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
+
+    
+    NSLog(message);
+    
+    [connection release];
+	//NSLog(rsltStr);
+}
+
 - (void) dealloc
 {
 	// Tear down GL
@@ -462,6 +493,8 @@ void draw() {
 	
 	[context release];
 	context = nil;
+    
+    [responseData release];
 	
 	[super dealloc];
 }
