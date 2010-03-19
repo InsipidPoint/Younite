@@ -1088,7 +1088,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ge Wang (AR5E675E2R)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ankit Gupta (CP47WX4743)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1098,7 +1098,7 @@
 				INFOPLIST_FILE = "Younite-Info.plist";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = Younite;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "895E55A3-5313-4FD9-B91B-2961B1E53558";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "CEF44080-849B-4AAC-95D0-1451F7BB1FDE";
 			};
 			name = Debug;
 		};
