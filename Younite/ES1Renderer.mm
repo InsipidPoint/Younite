@@ -14,7 +14,7 @@
 using namespace std;
 
 // global
-GLuint g_texture[1];
+GLuint g_texture[2];
 
 // =========================================================
 void getSolidSphere(GLfloat **triangleStripVertexHandle,
@@ -258,6 +258,7 @@ void draw() {
     // globe
     glPushMatrix();
         glEnable( GL_TEXTURE_2D );
+        glBindTexture( GL_TEXTURE_2D, g_texture[0] );
     
         glColor4f(1, 1, 1, 1);
         
@@ -285,11 +286,11 @@ void draw() {
     for (int i = 0; i < messages.size(); i++) {    
         glPushMatrix();
             if (messages[i].cause == 0) {
-                glColor4f(1.0, 0.2, 0.2, 0.02);
+                glColor4f(1.0, 0.2, 0.2, 0.05);
             } else if (messages[i].cause == 1) {
-                glColor4f(0.2, 1.0, 0.2, 0.02);
+                glColor4f(0.2, 1.0, 0.2, 0.05);
             } else {
-                glColor4f(0.2, 0.2, 1.0, 0.02);
+                glColor4f(0.2, 0.2, 1.0, 0.05);
             }
 
             glRotatef(messages[i].position.y, 0, 0, 1);
@@ -314,22 +315,22 @@ void draw() {
             }
             
             if (g_collisions[i].cause == 0) {
-                glColor4f(1.0, 0.2, 0.2, 0.02);
+                glColor4f(1.0, 0.2, 0.2, 0.8);
             } else if (g_collisions[i].cause == 1) {
-                glColor4f(0.2, 1.0, 0.2, 0.02);
+                glColor4f(0.2, 1.0, 0.2, 0.8);
             } else {
-                glColor4f(0.2, 0.2, 1.0, 0.02);
+                glColor4f(0.2, 0.2, 1.0, 0.8);
             }
             
-//            glEnable(GL_TEXTURE_2D);
-//            glBindTexture( GL_TEXTURE_2D, g_texture[0] );
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture( GL_TEXTURE_2D, g_texture[1] );
             
             glPushMatrix();
             
             glRotatef(g_collisions[i].p.y, 0, 0, 1);
             glRotatef(90-g_collisions[i].p.x, 1, 0, 0);
-            glTranslatef(0, 0, 2.0+g_zoom/2.0+diff*1);
-            glScalef(0.03+diff*1, 0.03+diff*1, 0.03+diff*1);
+            glTranslatef(0, 0, 2.0+g_zoom/2.0+diff*.8);
+            glScalef(0.03+diff*.5, 0.03+diff*.5, 0.03+diff*.5);
             glVertexPointer(2, GL_FLOAT, 0, squareVertices);
             glNormalPointer(GL_FLOAT, 0, normals);
             glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
@@ -384,6 +385,16 @@ void draw() {
     // load the texture
     MoGfx::loadTexture( @"earthmap1k", @"jpg" );
     
+    // generate texture name
+    glGenTextures( 2, &g_texture[1] );
+    // bind the texture
+    glBindTexture( GL_TEXTURE_2D, g_texture[1] );
+    // setting parameters
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    // load the texture
+    MoGfx::loadTexture( @"texture", @"png" );
+    
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glDepthMask( GL_TRUE );
@@ -402,6 +413,14 @@ void draw() {
 }
 
 - (void) playingMessage:(NSDictionary *)message {
+    g_collisions[g_cindex].p.x = [[message objectForKey:@"lat"] floatValue];
+    g_collisions[g_cindex].p.y = [[message objectForKey:@"lon"] floatValue];
+    g_collisions[g_cindex].startTime = [NSDate timeIntervalSinceReferenceDate];
+    g_collisions[g_cindex].cause = [[message objectForKey:@"Cause"] hash]%4;
+    g_collisions[g_cindex].enabled = YES;
+    
+    g_cindex = (g_cindex+1)%CSIZE;
+    
     NSLog(@"%@", message);
 }
 
@@ -484,7 +503,7 @@ void draw() {
         
         messages.push_back(m);
         
-        NSLog(@"%@, %d, (%f,%f)", cause, m.cause, m.position.x, m.position.y);
+  //      NSLog(@"%@, %d, (%f,%f)", cause, m.cause, m.position.x, m.position.y);
         
         data = [data substringWithRange:NSMakeRange(r2.location+r2.length, [data length]-r2.location-r2.length)];
 //        NSLog(data);
@@ -511,7 +530,7 @@ void draw() {
 //	[connection release];
 	NSString *data =  [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
 
-    NSLog(data);
+//    NSLog(data);
     [self parseMessages:data];
     
     [connection release];

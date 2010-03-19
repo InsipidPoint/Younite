@@ -338,7 +338,7 @@ NSString* g_names[g_numTracks];
 			[loc objectAtIndex:0], @"lat",
 			[loc objectAtIndex:1], @"lon", nil];
 	 
-	//[globeView playingMessage:dict];
+	[globeView playingMessage:dict];
 
 //	Global::loadPlaybackBuffer(m_playbackBuffer, arrayCount);
 //	Global::startPlayback();
