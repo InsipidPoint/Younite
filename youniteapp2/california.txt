@@ -1,0 +1,119 @@
+[NGZ]  37.78  122.32  Alameda NAS,CA
+[S11]  41.48  120.53  Alturas,CA
+[ACV]  40.98  124.10  Arcata,CA
+[BFL]  35.43  119.05  Bakersfield,CA
+[BAB]  39.13  121.45  Beale AFB,CA
+[BUO]  33.93  116.95  Beaumont,CA
+[BYS]  35.28  116.62  Bicycle Lk,CA
+[L35]  34.27  116.68  Big Bear Apt,CA
+[BIH]  37.60  118.60  Bishop,CA
+[BLU]  39.28  120.70  Blue Canyon,CA
+[BLH]  33.62  114.72  Blythe,CA
+[BUR]  34.20  118.37  Burbank,CA
+[NFG]  33.30  117.35  Camp Pendlet,CA
+[CZZ]  32.62  116.47  Campo,CA
+[CRQ]  33.13  117.28  Carlsbad,CA
+[MER]  37.38  120.57  Castle AFB,CA
+[CIC]  39.78  121.85  Chico,CA
+[NID]  35.68  117.68  China Lake,CA
+[CNO]  33.97  117.63  Chino,CA
+[CCR]  37.98  122.05  Concord,CA
+[CEC]  41.78  124.23  Crescent Cty,CA
+[DAG]  34.87  116.78  Daggett,CA
+[EDW]  34.90  117.88  Edwards AFB,CA
+[NJK]  32.82  115.68  El Centro,CA
+[EMT]  34.08  118.03  El Monte,CA
+[NZJ]  33.67  117.73  El Toro,CA
+[EKA]  41.33  124.28  Eureka,CA
+[HGT]  36.00  121.32  Fort Hunter,CA
+[OAR]  36.68  121.77  Fort Ord,CA
+[FAT]  36.77  119.72  Fresno,CA
+[FUL]  33.87  117.97  Fullerton,CA
+[VCV]  34.58  117.38  George AFB,CA
+[HHR]  33.92  118.33  Hawthorne,CA
+[HWD]  37.65  122.12  Hayward,CA
+[IPL]  32.83  115.57  Imperial,CA
+[NRS]  32.57  117.12  Imperial Bch,CA
+[POC]  34.10  117.78  La Verne,CA
+[TVL]  38.90  120.00  Lake Tahoe,CA
+[WJF]  34.73  118.22  Lancaster,CA
+[NLC]  36.33  119.95  Lemoore NAS,CA
+[LVK]  37.70  121.82  Livermore,CA
+[LGB]  33.82  118.15  Long Beach,CA
+[SLI]  33.78  118.05  Los Alamitos,CA
+[LAX]  33.93  118.40  Los Angeles,CA
+[MMH]  37.63  118.92  Mammoth Lks,CA
+[RIV]  33.88  117.27  March AFB,CA
+[MYV]  39.10  121.57  Marysville,CA
+[MHR]  38.57  121.30  Mather AFB,CA
+[MCC]  38.67  121.40  Mcclellan,CA
+[MCE]  37.28  120.52  Merced,CA
+[NKX]  32.87  117.15  Miramar NAS,CA
+[MOD]  37.63  120.95  Modesto,CA
+[NUQ]  37.42  122.05  Moffet NAS,CA
+[MHV]  35.05  118.15  Mojave,CA
+[1O5]  41.73  122.53  Montague,CA
+[MRY]  36.58  121.85  Monterey,CA
+[MHS]  41.32  122.32  Mount Shasta,CA
+[MWS]  34.23  118.07  Mount Wilson,CA
+[APC]  38.22  122.28  Napa,CA
+[EED]  34.77  114.62  Needles,CA
+[NZY]  32.70  117.20  North Is,CA
+[SBD]  34.10  117.23  Norton AFB,CA
+[OAK]  37.73  122.22  Oakland,CA
+[ONT]  34.05  117.62  Ontario Intl,CA
+[OXR]  34.20  119.20  Oxnard,CA
+[PSP]  33.83  116.50  Palm Springs,CA
+[PMD]  35.05  118.13  Palmdale,CA
+[PAO]  37.47  122.12  Palo Alto,CA
+[PRB]  35.67  120.63  Paso Robles,CA
+[53Q]  37.83  122.83  Pillaro Pt,CA
+[NTD]  34.12  119.12  Point Mugu,CA
+[PAA]  39.58  124.22  Pt Arena,CA
+[PGU]  34.95  121.12  Pt Arguello,CA
+[87Q]  35.67  121.28  Pt Piedras,CA
+[PPD]  36.12  121.47  Pt Piedras,CA
+[RBL]  40.15  122.25  Red Bluff,CA
+[RDD]  40.50  122.30  Redding,CA
+[RAL]  33.95  117.45  Riverside,CA
+[SAC]  38.52  121.50  Sacramento,CA
+[SMF]  38.70  121.60  Sacramento,CA
+[SNS]  36.67  121.60  Salinas,CA
+[SQL]  37.52  122.25  San Carlos,CA
+[L10]  33.42  117.62  San Clemente,CA
+[NUC]  33.02  118.58  San Clemente,CA
+[MYF]  32.82  117.13  San Diego,CA
+[SAN]  32.73  117.17  San Diego,CA
+[SDM]  32.57  116.98  San Diego,CA
+[SDM]  32.57  116.98  San Diego,CA
+[SEE]  32.82  116.97  San Diego,CA
+[51Q]  37.75  122.68  San Francisco,CA
+[SFO]  37.62  122.38  San Francisco,CA
+[SJC]  37.37  121.92  San Jose,CA
+[RHV]  37.33  121.82  San Jose/Rei,CA
+[SBP]  35.23  120.65  San Luis Obi,CA
+[L98]  33.38  117.58  San Mateo,CA
+[N5G]  34.03  120.40  San Miguel,CA
+[NSI]  33.25  119.45  San Nic Isl,CA
+[SDB]  34.75  118.73  Sandburg,CA
+[SNA]  33.67  117.88  Santa Ana,CA
+[SBA]  34.43  119.83  Santa Barb,CA
+[SMX]  34.90  120.45  Santa Maria,CA
+[SMO]  34.02  118.45  Santa Monica,CA
+[STS]  38.52  122.82  Santa Rosa,CA
+[O87]  40.03  124.07  Shelter Cove,CA
+[SIY]  41.78  122.47  Siskiyou,CA
+[SCK]  37.90  121.25  Stockton,CA
+[4SU]  35.33  117.10  Superior Val,CA
+[SVE]  40.63  120.95  Susanville,CA
+[TRM]  33.63  116.17  Thermal,CA
+[TOA]  33.80  118.33  Torrance,CA
+[SUU]  38.27  121.93  Travis AFB,CA
+[TRK]  39.32  120.13  Truckee-Tahoe,CA
+[NTK]  33.70  117.83  Tustin Mcas,CA
+[NXP]  34.28  116.15  Twenty9 Palm,CA
+[UKI]  39.13  123.20  Ukiah,CA
+[VNY]  34.22  118.48  Van Nuys,CA
+[VBG]  35.20  120.95  Vandenberg,CA
+[VBG]  35.20  120.95  Vandenberg,CA
+[VIS]  36.32  119.40  Visalia,CA

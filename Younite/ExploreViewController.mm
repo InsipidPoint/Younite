@@ -42,8 +42,8 @@ NSString* g_names[g_numTracks];
 		g_validAudioTracks[i] = false;
 	}
 	myLock = [[NSLock alloc] init];
-//	[NSThread detachNewThreadSelector:@selector(initialBuffering:)
-//							 toTarget:self withObject:nil];
+	[NSThread detachNewThreadSelector:@selector(initialBuffering:)
+							 toTarget:self withObject:nil];
 	
 	srand(time(NULL));
 	//[self explore];
@@ -88,8 +88,8 @@ NSString* g_names[g_numTracks];
 		[self getAudioForArray:i];
 	}
 	NSLog(@"... Done");
-	[NSThread detachNewThreadSelector:@selector(exploreContinuously:)
-							 toTarget:self withObject:nil];	
+//	[NSThread detachNewThreadSelector:@selector(exploreContinuously:)
+//							 toTarget:self withObject:nil];	
 	[pool release];
 }
 
@@ -223,7 +223,7 @@ NSString* g_names[g_numTracks];
 }
 - (void)getAudioForArray:(int)index {
 	//nameLabel.text = @"";
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://youniteapp.appspot.com/get?id=%d", index]]];
+	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://youniteapp2.appspot.com/get?id=%d", index]]];
 	//NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 //	NSURLResponse *response;
 //	NSError *error;
@@ -261,6 +261,27 @@ NSString* g_names[g_numTracks];
 	NSRange r3 = NSMakeRange(r.location+r.length, r2.location - r.location-r.length);
 	return [message substringWithRange:r3];	
 }
+- (NSString*)getCausefromMessage:(NSString *)message {
+	NSRange r = [message rangeOfString:@"<Cause>"];
+	if(r.location == NSNotFound)
+		return @"";
+	NSRange r2 = [message rangeOfString:@"</Cause>"];
+	if(r2.location == NSNotFound)
+		return @"";
+	NSRange r3 = NSMakeRange(r.location+r.length, r2.location - r.location-r.length);
+	return [message substringWithRange:r3];	
+}
+- (NSString*)getLocationfromMessage:(NSString *)message {
+	NSRange r = [message rangeOfString:@"<Location>"];
+	if(r.location == NSNotFound)
+		return @"";
+	NSRange r2 = [message rangeOfString:@"</Location>"];
+	if(r2.location == NSNotFound)
+		return @"";
+	NSRange r3 = NSMakeRange(r.location+r.length, r2.location - r.location-r.length);
+	return [message substringWithRange:r3];	
+}
+
 - (int)getArrayIdfromMessage:(NSString *)message {
 	NSRange r = [message rangeOfString:@"<Id>"];
 	if(r.location == NSNotFound) {
@@ -293,7 +314,8 @@ NSString* g_names[g_numTracks];
 	[myLock lock];
 
 	g_size[index] = arrayCount;
-	g_names[index] = [[self getNamefromMessage:message] retain];
+	NSString *m_name = [[self getNamefromMessage:message] retain];
+	g_names[index] = [m_name retain];
 	//Float32 *m_playbackBuffer = (Float32 *)malloc(sizeof(Float32)*arrayCount) ;
 	
 	for (int i = 0; i < arrayCount; i++) {
@@ -302,6 +324,22 @@ NSString* g_names[g_numTracks];
 	g_validAudioTracks[index] = true;
 	g_index[index] = 0;
 	[myLock unlock];
+	
+	//double lats[5] = {37.788, 42.350, 52.375, -33.724, 19.020, 39.901};
+	//double lons[5] = {-122.475, -71.0375, 4.877, 25.576, 72.839, 116.389};
+	
+	NSString *location = [self getLocationfromMessage:message];
+	NSArray *loc = [location componentsSeparatedByString:@","];
+	NSDictionary *dict;
+	
+	dict = [NSDictionary dictionaryWithObjectsAndKeys:
+			m_name, @"Name", 
+			[self getCausefromMessage:message], @"Cause", 
+			[loc objectAtIndex:0], @"lat",
+			[loc objectAtIndex:1], @"lon", nil];
+	 
+	//[globeView playingMessage:dict];
+
 //	Global::loadPlaybackBuffer(m_playbackBuffer, arrayCount);
 //	Global::startPlayback();
 }

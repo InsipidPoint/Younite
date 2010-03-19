@@ -155,7 +155,7 @@
 	
 	NSString *boundary = @"----BOUNDARY_IS_I";
 	
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://youniteapp.appspot.com/add", [[UIDevice currentDevice] uniqueIdentifier] ]];
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://youniteapp2.appspot.com/add", [[UIDevice currentDevice] uniqueIdentifier] ]];
 	
 	NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
 	

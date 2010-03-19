@@ -1,0 +1,18 @@
+[BED]  42.47   71.28  Bedford,MA
+[BVY]  42.58   70.92  Beverly,MA
+[BOS]  42.37   71.03  Boston,MA
+[30B]  41.78   70.50  Cape Cod Can,MA
+[CHH]  41.67   69.97  Chatham,MA
+[AYE]  42.57   71.60  Fort Devens,MA
+[HYA]  41.67   70.28  Hyannis,MA
+[LWM]  42.72   71.12  Lawrence,MA
+[MVY]  41.40   70.62  Marthas Vine,MA
+[ACK]  41.25   70.07  Nantucket,MA
+[EWB]  41.68   70.97  New Bedford,MA
+[OWD]  42.18   71.18  Norwood,MA
+[FMH]  41.65   70.52  Otis ANGB,MA
+[PSF]  42.26   73.18  Pittsfield,MA
+[NZW]  42.15   70.93  S Weymouth,MA
+[BAF]  42.17   72.72  Westfield,MA
+[CEF]  42.20   72.53  Westover,MA
+[ORH]  42.27   71.87  Worcester,MA
