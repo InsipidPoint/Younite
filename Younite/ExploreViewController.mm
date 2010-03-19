@@ -55,7 +55,7 @@ NSString* g_names[g_numTracks];
 
 - (void)viewDidDisappear:(BOOL)animated {
     [globeView stopAnimation];
-	//Global::stopPlayback();
+	Global::stopPlayback();
 }
 
 
@@ -88,8 +88,8 @@ NSString* g_names[g_numTracks];
 		[self getAudioForArray:i];
 	}
 	NSLog(@"... Done");
-//	[NSThread detachNewThreadSelector:@selector(exploreContinuously:)
-//							 toTarget:self withObject:nil];	
+	[NSThread detachNewThreadSelector:@selector(exploreContinuously:)
+							 toTarget:self withObject:nil];	
 	[pool release];
 }
 
@@ -152,8 +152,8 @@ NSString* g_names[g_numTracks];
 		}
 		else {
 			NSString *s = [NSString stringWithFormat:@"%d", index];
-			[NSThread detachNewThreadSelector:@selector(getAudioData:)
-									 toTarget:self withObject:s];
+//			[NSThread detachNewThreadSelector:@selector(getAudioData:)
+//									 toTarget:self withObject:s];
 			
 			//[self getAudioForArray:index];
 			g_validAudioTracks[index] = true;
@@ -245,10 +245,10 @@ NSString* g_names[g_numTracks];
 //	messageIndex++;
 //	[self exploreContinuously];	
 	
-/*	
+
 	Global::startPlayback();
 	NSLog(@"%d %f",Global::g_playbackIndex, Global::g_playbackBuffer[Global::g_playbackIndex]);
- */
+
 }
 
 - (NSString*)getNamefromMessage:(NSString *)message {
@@ -338,7 +338,7 @@ NSString* g_names[g_numTracks];
 			[loc objectAtIndex:0], @"lat",
 			[loc objectAtIndex:1], @"lon", nil];
 	 
-	//[globeView playingMessage:dict];
+	[globeView playingMessage:dict];
 
 //	Global::loadPlaybackBuffer(m_playbackBuffer, arrayCount);
 //	Global::startPlayback();

@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 
 
-@interface ContributeViewController : UIViewController <UITextFieldDelegate> {
+@interface ContributeViewController : UIViewController <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate> {
 	UIButton *button;
 	UIButton *uploadButton;
 	UIButton *playButton;
 	UITextField *nameField;
+	NSMutableArray *arrayCauses;
+	NSString *selectedCause;
 }
 
 @property (nonatomic, retain) IBOutlet UIButton *button;

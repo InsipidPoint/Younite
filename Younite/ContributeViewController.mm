@@ -29,7 +29,12 @@
 	if( !result )
 	{
 		NSLog(@"Can't Start Audio");
-	}	
+	}
+	arrayCauses = [[NSMutableArray alloc] init];
+	[arrayCauses addObject:@"World Peace"];
+	[arrayCauses addObject:@"Haiti"];
+	[arrayCauses addObject:@"Breast Cancer"];
+	selectedCause = [arrayCauses objectAtIndex:0];
 }
 
 
@@ -65,23 +70,23 @@
 		case 1:
 			// Start Recording
 			Global::startRecording();
-			[button setTitle:@"Stop Recording" forState:UIControlStateNormal];
-			[button setTitle:@"Stop Recording" forState:UIControlStateSelected];
-			[button setTitle:@"Stop Recording" forState:UIControlStateHighlighted];			
+			[button setTitle:@"Stop" forState:UIControlStateNormal];
+			[button setTitle:@"Stop" forState:UIControlStateSelected];
+			[button setTitle:@"Stop" forState:UIControlStateHighlighted];			
 			break;
 		case 3:
 			// Start Recording
 			Global::startRecording();
-			[button setTitle:@"Stop Recording" forState:UIControlStateNormal];
-			[button setTitle:@"Stop Recording" forState:UIControlStateSelected];
-			[button setTitle:@"Stop Recording" forState:UIControlStateHighlighted];			
+			[button setTitle:@"Stop" forState:UIControlStateNormal];
+			[button setTitle:@"Stop" forState:UIControlStateSelected];
+			[button setTitle:@"Stop" forState:UIControlStateHighlighted];			
 			break;			
 		case 2:
 			// Stop Recording
 			Global::setMode(1);
-			[button setTitle:@"Record Message" forState:UIControlStateNormal];
-			[button setTitle:@"Record Message" forState:UIControlStateSelected];
-			[button setTitle:@"Record Message" forState:UIControlStateHighlighted];
+			[button setTitle:@"Record" forState:UIControlStateNormal];
+			[button setTitle:@"Record" forState:UIControlStateSelected];
+			[button setTitle:@"Record" forState:UIControlStateHighlighted];
 			
 			if(Global::getRecSize() > 0) {
 				uploadButton.hidden = NO;
@@ -192,7 +197,7 @@
 //	// fifth parameter information
 	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
 	[postBody appendData:[@"Content-Disposition: form-data; name=\"cause\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-	[postBody appendData:[[NSString stringWithFormat:@"%@",@"Haiti"] dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[[NSString stringWithFormat:@"%@",selectedCause] dataUsingEncoding:NSUTF8StringEncoding]];
 //	
 //	// sixth parameter information
 //	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -241,5 +246,27 @@
         [nameField resignFirstResponder];
     }
     return YES;
+}
+
+//PickerViewController.m
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)thePickerView {
+	
+	return 1;
+}
+//PickerViewController.m
+- (NSInteger)pickerView:(UIPickerView *)thePickerView numberOfRowsInComponent:(NSInteger)component {
+	
+	return [arrayCauses count];
+}
+
+//PickerViewController.m
+- (NSString *)pickerView:(UIPickerView *)thePickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+	
+	return [arrayCauses objectAtIndex:row];
+}
+//PickerViewController.m
+- (void)pickerView:(UIPickerView *)thePickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+	selectedCause = [arrayCauses objectAtIndex:row];
+	NSLog(@"Selected Cause: %@. Index of selected cause: %i", [arrayCauses objectAtIndex:row], row);
 }
 @end

@@ -87,12 +87,15 @@ class AddFakeMessage(webapp.RequestHandler):
 		lon = [-122.32,-120.53,-124.10,-119.05,-121.45,-116.95,-116.62,-116.68,-118.60,-120.70,-114.72,-118.37,-117.35,-116.47,-117.28,-120.57,-121.85,-117.68,-117.63,-122.05,-124.23,-116.78,-117.88,-115.68,-118.03,-117.73,-124.28,-121.32,-121.77,-119.72,-117.97,-117.38,-118.33,-122.12,-115.57,-117.12,-117.78,-120.00,-118.22,-119.95,-121.82,-118.15,-118.05,-118.40,-118.92,-117.27,-121.57,-121.30,-121.40,-120.52,-117.15,-120.95,-122.05,-118.15,-122.53,-121.85,-122.32,-118.07,-122.28,-114.62,-117.20,-117.23,-122.22,-117.62,-119.20,-116.50,-118.13,-122.12,-120.63,-122.83,-119.12,-124.22,-121.12,-121.28,-121.47,-122.25,-122.30,-117.45,-121.50,-121.60,-121.60,-122.25,-117.62,-118.58,-117.13,-117.17,-116.98,-116.98,-116.97,-122.68,-122.38,-121.92,-121.82,-120.65,-117.58,-120.40,-119.45,-118.73,-117.88,-119.83,-120.45,-118.45,-122.82,-124.07,-122.47,-121.25,-117.10,-120.95,-116.17,-118.33,-121.93,-120.13,-117.83,-116.15,-123.20,-118.48,-120.95,-120.95,-119.40]
 		latboston = [42.47,42.58,42.37,41.78,41.67,42.57,41.67,42.72,41.40,41.25,41.68,42.18,41.65,42.26,42.15,42.17,42.20,42.27]
 		lonboston = [-71.28,-70.92,-71.03,-70.50,-69.97,-71.60,-70.28,-71.12,-70.62,-70.07,-70.97,-71.18,-70.52,-73.18,-70.93,-72.72,-72.53,-71.87]
-		deltaa = 1.0
-		deltab = 1.0
-		c1 = 5;
-		c2 = 5;
+		a = 40.0
+		b = -100.0
+		deltaa = 2.0
+		deltab = 30.0
+		c1 = 2;
+		c2 = 2;
 		for i in range(0,len(lat)):
-			if(random.random() > 0.1):
+			x = random.random()
+			if(x > 0.6):
 				for i in range(1, c1):
 					r1 = deltaa - 2*random.random()*deltaa
 					r2 = deltab - 2*random.random()*deltab
@@ -100,8 +103,18 @@ class AddFakeMessage(webapp.RequestHandler):
 					message = FakeMessage()
 					message.cause = """World Peace"""
 					message.name = """Anonymous"""
-					message.location = db.GeoPt(latboston[i]+r1,lonboston[i]+r2)
+					message.location = db.GeoPt(a+r1,b+r2)
 					message.put()
+			elif(x > 0.3):
+				for i in range(1, c1):
+					r1 = deltaa - 2*random.random()*deltaa
+					r2 = deltab - 2*random.random()*deltab
+				
+					message = FakeMessage()
+					message.cause = """Breast Cancer"""
+					message.name = """Anonymous"""
+					message.location = db.GeoPt(a+r1,b+r2)
+					message.put()			
 			else:		
 				for i in range(1,c2):
 					r1 = deltaa - 2*random.random()*deltaa
@@ -110,7 +123,7 @@ class AddFakeMessage(webapp.RequestHandler):
 					message = FakeMessage()
 					message.cause = """Haiti"""
 					message.name = """Anonymous"""
-					message.location = db.GeoPt(latboston[i]+r1,lonboston[i]+r2)
+					message.location = db.GeoPt(a+r1,b+r2)
 					message.put()
 		
 		self.redirect('/')
