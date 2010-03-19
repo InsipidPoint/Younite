@@ -11,13 +11,14 @@
 
 
 int Global::mode; // 1 = nothing, 2 = recording, 3 = playing, 4 = exploring
-int Global::g_recordingSize;
+const int Global::g_recordingSize = 160000;
 int Global::g_playbackSize;
 int Global::g_recSize;// True Size of the Recording Buffer
 Float32 * Global::g_recordingBuffer;
 Float32 * Global::g_playbackBuffer;
 int Global::g_index;
 int Global::g_playbackIndex;
+int Global::g_playbackLoadHead;
 
 
 // audio cb
@@ -44,7 +45,9 @@ void Global::audio_callback( Float32 * buffer, UInt32 numFrames, void * userData
 				}
 				break;
 			case 4:
-				buffer[2*i] = buffer[2*i + 1] = g_playbackBuffer[g_playbackIndex++];
+				buffer[2*i] = buffer[2*i + 1] = g_playbackBuffer[g_playbackIndex];
+				//g_playbackBuffer[g_playbackIndex] = 0;
+				g_playbackIndex++;
 				g_playbackIndex = g_playbackIndex%g_playbackSize;
 				break;
 			default:
@@ -97,13 +100,14 @@ bool Global::init() {
 			return false;
 		}			
 		Global::mode = 1;
-		Global::g_recordingSize = 160000;
+		//Global::g_recordingSize = 160000;
 		Global::g_playbackSize = g_recordingSize*5;
 		Global::g_recSize = 0;// True Size of the Recording Buffer
 		Global::g_recordingBuffer = (Float32 *)malloc(sizeof(Float32)*g_recordingSize) ;
 		Global::g_playbackBuffer = (Float32 *)malloc(sizeof(Float32)*g_playbackSize) ;
 		Global::g_index = 0;		
 		Global::g_playbackIndex = 0;		
+		Global::g_playbackLoadHead = 0;		
 	}
 	return true;
 }
@@ -121,6 +125,7 @@ void Global::startPlayback() {
 void Global::stopPlayback() {
 	mode = 1;
 	g_playbackIndex = 0;
+	g_playbackLoadHead = 0;
 }
 
 void Global::setMode(int _mode) {
@@ -138,7 +143,19 @@ Float32* Global::getRecordingBuffer() {
 }
 void Global::loadPlaybackBuffer(Float32 *m_playbackBuffer, int arrayCount) {
 	for(int i=0;i<arrayCount; i++) {
-		g_playbackBuffer[g_playbackIndex + i] = m_playbackBuffer[i];
+		g_playbackBuffer[g_playbackLoadHead++] = m_playbackBuffer[i];
+		g_playbackLoadHead %= g_playbackSize;
+		if(g_playbackLoadHead == 0)
+			NSLog(@"Rounded Back");
 	}
 }
-
+void Global::tick(Float32 value) {
+	g_playbackBuffer[g_playbackLoadHead++] = value;
+	if (g_playbackLoadHead == 1) {
+		NSLog(@"Pushed %f onto %d",value, 0);
+	}
+	g_playbackLoadHead %= g_playbackSize;
+	if(g_playbackLoadHead == 0) {
+		NSLog(@"Rounded Back");
+	}
+}

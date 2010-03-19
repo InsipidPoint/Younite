@@ -175,14 +175,14 @@
 	[postBody appendData:[[NSString stringWithFormat:@"%@",audioData] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 //	// second parameter information
-//	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//	[postBody appendData:[@"Content-Disposition: form-data; name=\"latitude\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-//	[postBody appendData:[[NSString stringWithFormat:@"%f",coordinate.latitude] dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[@"Content-Disposition: form-data; name=\"lat\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[[NSString stringWithFormat:@"%@",@"36.04"] dataUsingEncoding:NSUTF8StringEncoding]];
 //	
 //	// third parameter information
-//	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//	[postBody appendData:[@"Content-Disposition: form-data; name=\"longitude\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-//	[postBody appendData:[[NSString stringWithFormat:@"%f",coordinate.longitude] dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[@"Content-Disposition: form-data; name=\"lon\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[[NSString stringWithFormat:@"%@",@"-121.123"] dataUsingEncoding:NSUTF8StringEncoding]];
 	
 	// fourth parameter information
 	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -190,9 +190,9 @@
 	[postBody appendData:[nameField.text dataUsingEncoding:NSUTF8StringEncoding]];
 	
 //	// fifth parameter information
-//	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-//	[postBody appendData:[@"Content-Disposition: form-data; name=\"keywords\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-//	[postBody appendData:[KeywordField.text dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[@"Content-Disposition: form-data; name=\"cause\"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+	[postBody appendData:[[NSString stringWithFormat:@"%@",@"Haiti"] dataUsingEncoding:NSUTF8StringEncoding]];
 //	
 //	// sixth parameter information
 //	[postBody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];

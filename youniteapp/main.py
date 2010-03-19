@@ -1,5 +1,6 @@
 import cgi
 import datetime
+import random
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -37,24 +38,38 @@ class MainPage(webapp.RequestHandler):
 			</form>
 	        </body>
 	    	</html>""")
-
-class GetMessage(webapp.RequestHandler):
+class GetAllMessages(webapp.RequestHandler):
 	def get(self):
-		messages = db.GqlQuery("SELECT * FROM Message ORDER BY timestamp DESC LIMIT 1")
+		messages = db.GqlQuery("SELECT * FROM Message ORDER BY timestamp DESC")
 		for message in messages:
-			self.response.out.write('<Audio>%s</Audio>\n' % message.audio )
+			self.response.out.write('<Message>\n')
 			self.response.out.write('<Name>%s</Name>\n' % message.name )
 			self.response.out.write('<Cause>%s</Cause>\n' % message.cause )
 			self.response.out.write('<Location>%f,%f</Location>\n' % (message.location.lat, message.location.lon) )
+			self.response.out.write('</Message>\n')
+	
+class GetMessage(webapp.RequestHandler):
+	def get(self):
+		messages = db.GqlQuery("SELECT * FROM Message ORDER BY timestamp DESC")
+		for message in messages:
+			r = random.random()
+			if r > 0.7:
+				self.response.out.write('<Audio>%s</Audio>\n' % message.audio )
+				self.response.out.write('<Name>%s</Name>\n' % message.name )
+				self.response.out.write('<Cause>%s</Cause>\n' % message.cause )
+				self.response.out.write('<Location>%f,%f</Location>\n' % (message.location.lat, message.location.lon) )
+				self.response.out.write('<Id>%s</Id>\n' % self.request.get('id') )
+				break
+
 		
 class AddMessage(webapp.RequestHandler):
 	def post(self):
 		message = Message()
-		message.cause = """World Peace"""
+		message.cause = self.request.get('cause')
 		message.audio = self.request.get('audio')
 		message.name = self.request.get('name')
 		message.sound = """some sound params"""
-		message.location = db.GeoPt(37.424106,-122.166076)
+		message.location = db.GeoPt(float(self.request.get('lat')),float(self.request.get('lon')))
 		message.put()
 		self.redirect('/')
 
@@ -62,7 +77,8 @@ class AddMessage(webapp.RequestHandler):
 application = webapp.WSGIApplication(
 									 [('/', MainPage),
             						  ('/add', AddMessage),
-									  ('/get', GetMessage)],
+									  ('/get', GetMessage),
+									  ('/everything', GetAllMessages)],
                                      debug=True)
 
 def main():

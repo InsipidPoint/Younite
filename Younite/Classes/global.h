@@ -29,18 +29,20 @@ public:
 	static void loadPlaybackBuffer(Float32 *m_playbackBuffer, int arrayCount);
 	static void startPlayback();
 	static void stopPlayback();
+	static void tick(Float32 value);
 
 		
 public:
 	static int mode; // 1 = nothing, 2 = recording, 3 = playing, 4 = exploring
-	static int g_recordingSize;
+	static const int g_recordingSize;
 	static int g_playbackSize;
 	static int g_recSize;// True Size of the Recording Buffer
 	static Float32 *g_recordingBuffer;
 	static Float32 *g_playbackBuffer;
 	static int g_index;
 	static int g_playbackIndex;
-	
+	static int g_playbackLoadHead;
+
 	
 public:
 	static void audio_callback( Float32 * buffer, UInt32 numFrames, void * userData );
