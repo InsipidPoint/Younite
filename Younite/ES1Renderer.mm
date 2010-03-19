@@ -271,19 +271,23 @@ void draw() {
         glDisable(GL_TEXTURE_2D);
     glPopMatrix();
     
-//    for (int i = 0; i < messages.size(); i++) {    
+    for (int i = 0; i < messages.size(); i++) {    
     glPushMatrix();
-    glColor4f(1.0, 0, 0, 1);
-    glRotatef(-122.166077, 0, 0, 1);
-    glRotatef(90-37.424107, 1, 0, 0);
-    glTranslatef(0, 0, 2.0+g_zoom/2.0);
-    glScalef(0.1, 0.1, 0.1);
-    glVertexPointer(2, GL_FLOAT, 0, squareVertices);
-    glNormalPointer(GL_FLOAT, 0, normals);
-    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        if (messages[i].cause == 0) {
+            glColor4f(1.0, 0, 0, 0.1);
+        } else if (messages[i].cause == 1) {
+            glColor4f(0, 1.0, 0, 0.1);
+        }
+        glRotatef(messages[i].position.y, 0, 0, 1);
+        glRotatef(90-messages[i].position.x, 1, 0, 0);
+        glTranslatef(0, 0, 2.0+g_zoom/2.0);
+        glScalef(0.03, 0.03, 0.03);
+        glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+        glNormalPointer(GL_FLOAT, 0, normals);
+        glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glPopMatrix();
-//    }
+    }
 }
 
 
@@ -342,7 +346,7 @@ void draw() {
     
     MoTouch::addCallback( touchCallback, self );
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://youniteapp.appspot.com/everything"]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://youniteapp2.appspot.com/everything"]];
     [[NSURLConnection connectionWithRequest:request delegate:self] retain];
 	return self;
 }

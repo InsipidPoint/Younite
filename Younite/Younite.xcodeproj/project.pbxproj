@@ -174,7 +174,6 @@
 		0DD53CB31151E9C2002DCA31 /* GlobeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GlobeView.mm; sourceTree = "<group>"; };
 		0DD53CBF1151E9DE002DCA31 /* ES1Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES1Renderer.h; sourceTree = "<group>"; };
 		0DD53CC01151E9DE002DCA31 /* ES1Renderer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ES1Renderer.mm; sourceTree = "<group>"; };
-		0DD53CC11151E9DE002DCA31 /* ESRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESRenderer.h; sourceTree = "<group>"; };
 		0DD53D1E1152B527002DCA31 /* texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = texture.png; sourceTree = "<group>"; };
 		1D3623240D0F684500981E51 /* YouniteAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YouniteAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* YouniteAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = YouniteAppDelegate.mm; sourceTree = "<group>"; };
@@ -522,7 +521,6 @@
 				BCEB6B8C11484183001B6DF5 /* ExploreViewController.xib */,
 				0DD53CBF1151E9DE002DCA31 /* ES1Renderer.h */,
 				0DD53CC01151E9DE002DCA31 /* ES1Renderer.mm */,
-				0DD53CC11151E9DE002DCA31 /* ESRenderer.h */,
 				0DD53CB21151E9C2002DCA31 /* GlobeView.h */,
 				0DD53CB31151E9C2002DCA31 /* GlobeView.mm */,
 				BCEB69E911481B66001B6DF5 /* ContributeViewController.h */,

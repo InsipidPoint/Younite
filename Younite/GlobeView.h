@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-#import "ESRenderer.h"
+#import "ES1Renderer.h"
 
 @interface GlobeView : UIView {
 @private
-	id <ESRenderer> renderer;
+	ES1Renderer *renderer;
 	
 	BOOL animating;
 	BOOL displayLinkSupported;
@@ -32,5 +32,6 @@
 - (void) startAnimation;
 - (void) stopAnimation;
 - (void) drawView:(id)sender;
+- (void) playingMessage:(NSDictionary *)message;
 
 @end

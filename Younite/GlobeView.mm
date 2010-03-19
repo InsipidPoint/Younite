@@ -133,6 +133,10 @@
 	}
 }
 
+- (void) playingMessage:(NSDictionary *)message {
+    
+}
+
 - (void) dealloc
 {
     [renderer release];
