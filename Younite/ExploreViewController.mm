@@ -42,8 +42,9 @@ NSString* g_names[g_numTracks];
 		g_validAudioTracks[i] = false;
 	}
 	myLock = [[NSLock alloc] init];
-	[NSThread detachNewThreadSelector:@selector(exploreContinuously:)
-						   toTarget:self withObject:nil];
+//	[NSThread detachNewThreadSelector:@selector(initialBuffering:)
+//							 toTarget:self withObject:nil];
+	
 	srand(time(NULL));
 	//[self explore];
 }
@@ -54,6 +55,7 @@ NSString* g_names[g_numTracks];
 
 - (void)viewDidDisappear:(BOOL)animated {
     [globeView stopAnimation];
+	//Global::stopPlayback();
 }
 
 
@@ -78,6 +80,19 @@ NSString* g_names[g_numTracks];
     // e.g. self.myOutlet = nil;
 }
 
+- (void)initialBuffering:(id)data {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSLog(@"Buffering ...");
+	for(int i=0;i<g_numTracks;i++) {
+		NSLog(@"Retrieving %d/%d", (i+1), g_numTracks);
+		[self getAudioForArray:i];
+	}
+	NSLog(@"... Done");
+	[NSThread detachNewThreadSelector:@selector(exploreContinuously:)
+							 toTarget:self withObject:nil];	
+	[pool release];
+}
+
 - (void)getAudioData:(id)someData {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString * index = (NSString *)someData;
@@ -86,7 +101,7 @@ NSString* g_names[g_numTracks];
 }
 // pick a random sample from a user. Returns the picked index. Inputs the last picked index
 - (void) smooth:(Float32 *)audio ofSize:(int)size {
-	int slew = size/10;
+	int slew = size/30;
 	int i = 0;
 	while(i<size) {
 		if(i<slew) {
@@ -113,7 +128,7 @@ NSString* g_names[g_numTracks];
 				int newsize = 12000;				
 				int r = random()%4000;
 				newsize += r - 2000;
-				//NSLog(@"Picked a newsize of %d from %d of total size %d with index %d", newsize, index, g_size[index], g_index[index]);
+				NSLog(@"Picked a newsize of %d from %d of total size %d with index %d", newsize, index, g_size[index], g_index[index]);
 				if (newsize + g_index[index] >= g_size[index]) {
 					newsize = g_size[index] - g_index[index];
 				}
@@ -219,6 +234,8 @@ NSString* g_names[g_numTracks];
 	
 	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
+
+
 - (void)explore {
 //	nameLabel.text = @"";
 //	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://youniteapp.appspot.com/get"]];
@@ -227,26 +244,45 @@ NSString* g_names[g_numTracks];
 //	//conn.tag = messageIndex;
 //	messageIndex++;
 //	[self exploreContinuously];	
+	
+/*	
 	Global::startPlayback();
 	NSLog(@"%d %f",Global::g_playbackIndex, Global::g_playbackBuffer[Global::g_playbackIndex]);
+ */
 }
 
 - (NSString*)getNamefromMessage:(NSString *)message {
 	NSRange r = [message rangeOfString:@"<Name>"];
+	if(r.location == NSNotFound)
+		return @"";
 	NSRange r2 = [message rangeOfString:@"</Name>"];
+	if(r2.location == NSNotFound)
+		return @"";
 	NSRange r3 = NSMakeRange(r.location+r.length, r2.location - r.location-r.length);
 	return [message substringWithRange:r3];	
 }
 - (int)getArrayIdfromMessage:(NSString *)message {
 	NSRange r = [message rangeOfString:@"<Id>"];
+	if(r.location == NSNotFound) {
+		return 0;	
+	}
 	NSRange r2 = [message rangeOfString:@"</Id>"];
+	if(r2.location == NSNotFound) {
+		return 0;
+	}
 	NSRange r3 = NSMakeRange(r.location+r.length, r2.location - r.location-r.length);
 	NSString *identifier = [message substringWithRange:r3];
 	return [identifier intValue];
 }
 - (void)setAudiofromMessage:(NSString *)message {
 	NSRange r = [message rangeOfString:@"<Audio>"];
+	if(r.location == NSNotFound) {
+		return;	
+	}
 	NSRange r2 = [message rangeOfString:@"</Audio>"];
+	if(r2.location == NSNotFound) {
+		return;
+	}
 	NSRange r3 = NSMakeRange(r.location+r.length, r2.location - r.location-r.length);
 	NSString *audio = [message substringWithRange:r3];
 	//NSLog(@"%@", audio);

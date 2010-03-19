@@ -9,7 +9,6 @@
 
 #include "global.h"
 
-
 int Global::mode; // 1 = nothing, 2 = recording, 3 = playing, 4 = exploring
 const int Global::g_recordingSize = 160000;
 int Global::g_playbackSize;
@@ -19,6 +18,7 @@ Float32 * Global::g_playbackBuffer;
 int Global::g_index;
 int Global::g_playbackIndex;
 int Global::g_playbackLoadHead;
+stk::JCRev* Global::g_reverb;
 
 
 // audio cb
@@ -45,7 +45,7 @@ void Global::audio_callback( Float32 * buffer, UInt32 numFrames, void * userData
 				}
 				break;
 			case 4:
-				buffer[2*i] = buffer[2*i + 1] = 0.8*g_playbackBuffer[g_playbackIndex];
+				buffer[2*i] = buffer[2*i + 1] = 0.8*g_reverb->tick(g_playbackBuffer[g_playbackIndex]);
 				//g_playbackBuffer[g_playbackIndex] = 0;
 				g_playbackIndex++;
 				g_playbackIndex = g_playbackIndex%g_playbackSize;
@@ -107,7 +107,9 @@ bool Global::init() {
 		Global::g_playbackBuffer = (Float32 *)malloc(sizeof(Float32)*g_playbackSize) ;
 		Global::g_index = 0;		
 		Global::g_playbackIndex = 0;		
-		Global::g_playbackLoadHead = 0;		
+		Global::g_playbackLoadHead = 0;	
+		Global::g_reverb = new stk::JCRev();
+		g_reverb->setEffectMix(0.08);
 	}
 	return true;
 }

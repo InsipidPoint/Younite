@@ -11,6 +11,7 @@
 #define __GLOBAL_H__
 
 #import "mopho.h"
+#import "JCRev.h"
 
 // defines
 #define SRATE 8000
@@ -42,7 +43,7 @@ public:
 	static int g_index;
 	static int g_playbackIndex;
 	static int g_playbackLoadHead;
-
+	static stk::JCRev* g_reverb;
 	
 public:
 	static void audio_callback( Float32 * buffer, UInt32 numFrames, void * userData );
