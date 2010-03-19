@@ -309,17 +309,17 @@ void draw() {
         // go through each enabled animation
         if (g_collisions[i].enabled) {
             NSTimeInterval diff = current-g_collisions[i].startTime;
-            if (diff > 3) {
+            if (diff > 5) {
                 g_collisions[i].enabled = NO;
                 continue;
             }
             
             if (g_collisions[i].cause == 0) {
-                glColor4f(1.0, 0.2, 0.2, 0.8);
+                glColor4f(1.0, 0.2, 0.2, 0.8-0.8/5.0*diff);
             } else if (g_collisions[i].cause == 1) {
-                glColor4f(0.2, 1.0, 0.2, 0.8);
+                glColor4f(0.2, 1.0, 0.2, 0.8-0.8/5.0*diff);
             } else {
-                glColor4f(0.2, 0.2, 1.0, 0.8);
+                glColor4f(0.2, 0.2, 1.0, 0.8-0.8/5.0*diff);
             }
             
             glEnable(GL_TEXTURE_2D);
@@ -329,8 +329,21 @@ void draw() {
             
             glRotatef(g_collisions[i].p.y, 0, 0, 1);
             glRotatef(90-g_collisions[i].p.x, 1, 0, 0);
-            glTranslatef(0, 0, 2.0+g_zoom/2.0+diff*.8);
-            glScalef(0.03+diff*.5, 0.03+diff*.5, 0.03+diff*.5);
+            glTranslatef(0, 0, 2.0+g_zoom/2.0+diff*.3);
+            glScalef(0.03+diff*.2, 0.03+diff*.2, 0.03+diff*.2);
+            glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+            glNormalPointer(GL_FLOAT, 0, normals);
+            glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            glPopMatrix();
+            
+            glPushMatrix();
+            glColor4f(1.0, 1.0, 1.0, 0.9);
+            glRotatef(g_collisions[i].p.y, 0, 0, 1);
+            glRotatef(90-g_collisions[i].p.x, 1, 0, 0);
+            glTranslatef(0, 0, 2.01+g_zoom/2.0);
+            glScalef(0.1, 0.1, 0.1);
             glVertexPointer(2, GL_FLOAT, 0, squareVertices);
             glNormalPointer(GL_FLOAT, 0, normals);
             glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
