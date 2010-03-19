@@ -19,6 +19,8 @@ NSString* g_names[g_numTracks];
 @implementation ExploreViewController
 
 @synthesize nameLabel;
+@synthesize globeView;
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -46,6 +48,14 @@ NSString* g_names[g_numTracks];
 	//[self explore];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [globeView startAnimation];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [globeView stopAnimation];
+}
+
 
 /*
 // Override to allow orientations other than the default portrait orientation.
@@ -67,7 +77,6 @@ NSString* g_names[g_numTracks];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
-
 
 - (void)dealloc {
     [super dealloc];
@@ -270,5 +279,11 @@ NSString* g_names[g_numTracks];
 	//NSLog(rsltStr);
 }
 
+- (void) dealloc {
+	[nameLabel release];
+	[globeView release];
+	
+	[super dealloc];
+}
 
 @end
