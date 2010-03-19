@@ -45,7 +45,7 @@ void Global::audio_callback( Float32 * buffer, UInt32 numFrames, void * userData
 				}
 				break;
 			case 4:
-				buffer[2*i] = buffer[2*i + 1] = g_playbackBuffer[g_playbackIndex];
+				buffer[2*i] = buffer[2*i + 1] = 0.8*g_playbackBuffer[g_playbackIndex];
 				//g_playbackBuffer[g_playbackIndex] = 0;
 				g_playbackIndex++;
 				g_playbackIndex = g_playbackIndex%g_playbackSize;

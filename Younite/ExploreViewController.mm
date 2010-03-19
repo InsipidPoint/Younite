@@ -85,6 +85,19 @@ NSString* g_names[g_numTracks];
 	[pool release];
 }
 // pick a random sample from a user. Returns the picked index. Inputs the last picked index
+- (void) smooth:(Float32 *)audio ofSize:(int)size {
+	int slew = size/10;
+	int i = 0;
+	while(i<size) {
+		if(i<slew) {
+			audio[i] = audio[i]*(i*1.0/slew);
+		}
+		if(i >= size - slew) {
+			audio[i] = audio[i]*((size - i - 1)*1.0/slew);
+		}
+		i++;
+	}
+}
 - (int) tick2:(int)last {
 	int valid = 0;
 	last++;
@@ -97,25 +110,29 @@ NSString* g_names[g_numTracks];
 		if(g_validAudioTracks[index]) {
 			if(g_size[index] > 0 && chosen < 0) {
 				
-				int newsize = 24000;				
+				int newsize = 12000;				
 				int r = random()%4000;
 				newsize += r - 2000;
+				//NSLog(@"Picked a newsize of %d from %d of total size %d with index %d", newsize, index, g_size[index], g_index[index]);
 				if (newsize + g_index[index] >= g_size[index]) {
-					newsize = g_size[index] - g_index[index] - 1;
+					newsize = g_size[index] - g_index[index];
 				}
+				//NSLog(@"Trying to allocate a buffer of size %d from %d of total size %d", newsize, index, g_size[index]);
 				Float32 *m_playbackBuffer = (Float32 *)malloc(sizeof(Float32)*newsize) ;
-				
 				for (int j = 0; j < newsize; j++) {
-					m_playbackBuffer[j] = g_audioTracks[index][j];
+					m_playbackBuffer[j] = g_audioTracks[index][g_index[index]];
+					g_index[index] = g_index[index] + 1;
 				}
+				[self smooth:m_playbackBuffer ofSize:newsize];
 				Global::loadPlaybackBuffer(m_playbackBuffer, newsize);
-				g_index[index] = g_index[index] + newsize + 1;
 				valid++;
 				if(g_index[index] == g_size[index]) {
 					g_validAudioTracks[index] = false;
 					g_size[index] = 0;
+					g_index[index] = 0;
 				}
 				chosen = index;
+				free(m_playbackBuffer);
 			}
 		}
 		else {
@@ -129,7 +146,7 @@ NSString* g_names[g_numTracks];
 		index++;
 	}
 	[myLock unlock];
-	NSLog(@"chosen %d", chosen);
+	//NSLog(@"chosen %d", chosen);
 	return chosen;
 	
 }
@@ -182,7 +199,7 @@ NSString* g_names[g_numTracks];
 			nameLabel.text = @"";
 		}
 
-		NSLog(@"%d %d",last,g_index[last]);
+		//NSLog(@"%d %d",last,g_index[last]);
 	}
 	// Message back to the main thread
 //	[self performSelectorOnMainThread:@selector(allDone:)
@@ -236,7 +253,7 @@ NSString* g_names[g_numTracks];
 	NSArray *chunks = [audio componentsSeparatedByString: @"\n"];
 	int arrayCount = [chunks count];
 	int index = [self getArrayIdfromMessage:message];
-	NSLog(@"%d %d",arrayCount, index);
+	//NSLog(@"%d %d",arrayCount, index);
 	[myLock lock];
 
 	g_size[index] = arrayCount;
