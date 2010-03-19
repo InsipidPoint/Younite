@@ -134,7 +134,7 @@
 }
 
 - (void) playingMessage:(NSDictionary *)message {
-    
+    [renderer playingMessage:message];
 }
 
 - (void) dealloc

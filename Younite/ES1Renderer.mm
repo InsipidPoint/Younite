@@ -210,6 +210,17 @@ void touchCallback(NSSet *allTouches, UIView * view, const std::map<int, MoTouch
     }
 }
 
+#define CSIZE 15
+
+// collision animation information
+struct Collision {
+    CGPoint p;
+    NSTimeInterval startTime;
+    int cause;
+    BOOL enabled;
+} g_collisions[CSIZE];
+unsigned g_cindex = 0;
+
 vector<Message> messages;
 
 // draw
@@ -272,21 +283,60 @@ void draw() {
     glPopMatrix();
     
     for (int i = 0; i < messages.size(); i++) {    
-    glPushMatrix();
-        if (messages[i].cause == 0) {
-            glColor4f(1.0, 0, 0, 0.1);
-        } else if (messages[i].cause == 1) {
-            glColor4f(0, 1.0, 0, 0.1);
+        glPushMatrix();
+            if (messages[i].cause == 0) {
+                glColor4f(1.0, 0.2, 0.2, 0.02);
+            } else if (messages[i].cause == 1) {
+                glColor4f(0.2, 1.0, 0.2, 0.02);
+            } else {
+                glColor4f(0.2, 0.2, 1.0, 0.02);
+            }
+
+            glRotatef(messages[i].position.y, 0, 0, 1);
+            glRotatef(90-messages[i].position.x, 1, 0, 0);
+            glTranslatef(0, 0, 2.0+g_zoom/2.0);
+            glScalef(0.03, 0.03, 0.03);
+            glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+            glNormalPointer(GL_FLOAT, 0, normals);
+            glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glPopMatrix();
+    }
+    
+    NSTimeInterval current = [NSDate timeIntervalSinceReferenceDate];
+    for (int i = 0; i < CSIZE; i++) {
+        // go through each enabled animation
+        if (g_collisions[i].enabled) {
+            NSTimeInterval diff = current-g_collisions[i].startTime;
+            if (diff > 3) {
+                g_collisions[i].enabled = NO;
+                continue;
+            }
+            
+            if (g_collisions[i].cause == 0) {
+                glColor4f(1.0, 0.2, 0.2, 0.02);
+            } else if (g_collisions[i].cause == 1) {
+                glColor4f(0.2, 1.0, 0.2, 0.02);
+            } else {
+                glColor4f(0.2, 0.2, 1.0, 0.02);
+            }
+            
+//            glEnable(GL_TEXTURE_2D);
+//            glBindTexture( GL_TEXTURE_2D, g_texture[0] );
+            
+            glPushMatrix();
+            
+            glRotatef(g_collisions[i].p.y, 0, 0, 1);
+            glRotatef(90-g_collisions[i].p.x, 1, 0, 0);
+            glTranslatef(0, 0, 2.0+g_zoom/2.0+diff*1);
+            glScalef(0.03+diff*1, 0.03+diff*1, 0.03+diff*1);
+            glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+            glNormalPointer(GL_FLOAT, 0, normals);
+            glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            
+            glPopMatrix();
         }
-        glRotatef(messages[i].position.y, 0, 0, 1);
-        glRotatef(90-messages[i].position.x, 1, 0, 0);
-        glTranslatef(0, 0, 2.0+g_zoom/2.0);
-        glScalef(0.03, 0.03, 0.03);
-        glVertexPointer(2, GL_FLOAT, 0, squareVertices);
-        glNormalPointer(GL_FLOAT, 0, normals);
-        glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glPopMatrix();
     }
 }
 
@@ -339,7 +389,7 @@ void draw() {
     glDepthMask( GL_TRUE );
     glClearDepthf(1.0f);
     
-    glEnable   ( GL_CULL_FACE );
+    glEnable( GL_CULL_FACE );
 	glShadeModel( GL_SMOOTH );
     
     getSolidSphere(&sphereTriangleStripVertices, &sphereTriangleStripNormals, &sphereTriangleStripTex, &sphereTriangleStripVertexCount, &sphereTriangleFanVertices, &sphereTriangleFanNormals, &sphereTriangleFanTex, &sphereTriangleFanVertexCount, 0.5, 50, 50);
@@ -349,6 +399,10 @@ void draw() {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://youniteapp2.appspot.com/everything"]];
     [[NSURLConnection connectionWithRequest:request delegate:self] retain];
 	return self;
+}
+
+- (void) playingMessage:(NSDictionary *)message {
+    NSLog(@"%@", message);
 }
 
 - (void) render
