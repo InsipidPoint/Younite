@@ -16,6 +16,8 @@ using namespace std;
 // global
 GLuint g_texture[2];
 
+GLfloat g_stars[100*3];
+
 // =========================================================
 void getSolidSphere(GLfloat **triangleStripVertexHandle,
                     GLfloat **triangleStripNormalHandle,
@@ -57,7 +59,7 @@ void getSolidSphere(GLfloat **triangleStripVertexHandle,
         y = cos(theta) * sin(drho);
         z = nsign * cos(drho);
         
-        triangleFanTex[counter*2] = theta/(2*M_PI);
+        triangleFanTex[counter*2] = (j == slices) ? 1.0 : theta/(2*M_PI);
         triangleFanTex[counter*2+1] = drho/M_PI;
         
         triangleFanVertices[counter*3] = x * radius;
@@ -93,7 +95,7 @@ void getSolidSphere(GLfloat **triangleStripVertexHandle,
             y = cos(theta) * sin(rho);
             z = nsign * cos(rho);
             
-            triangleStripTex[counter*2] = theta/(2*M_PI);
+            triangleStripTex[counter*2] = (j == slices) ? 1.0 : theta/(2*M_PI);
             triangleStripTex[counter*2+1] = rho/M_PI;
             
             // TODO: Implement texture mapping if texture used
@@ -105,7 +107,7 @@ void getSolidSphere(GLfloat **triangleStripVertexHandle,
             y = cos(theta) * sin(rho + drho);
             z = nsign * cos(rho + drho);
             
-            triangleStripTex[counter*2] = theta/(2*M_PI);
+            triangleStripTex[counter*2] = (j == slices) ? 1.0 : theta/(2*M_PI);
             triangleStripTex[counter*2+1] = (rho+drho)/M_PI;
             
             //                TXTR_COORD(s, t - dt);
@@ -257,40 +259,74 @@ void draw() {
     
     // globe
     glPushMatrix();
-        glEnable( GL_TEXTURE_2D );
-        glBindTexture( GL_TEXTURE_2D, g_texture[0] );
+    glEnable( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, g_texture[0] );
     
-        glColor4f(1, 1, 1, 1);
-        
-        // scale
-        glScalef(4+g_zoom, 4+g_zoom, 4+g_zoom);
-        
-        // vertex
-        glEnableClientState(GL_VERTEX_ARRAY );
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glColor4f(1, 1, 1, 1);
     
-        glVertexPointer(3, GL_FLOAT, 0, sphereTriangleFanVertices);
-        glNormalPointer(GL_FLOAT, 0, sphereTriangleFanNormals);
-        glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleFanTex);
-        glDrawArrays(GL_LINE_STRIP, 0, sphereTriangleFanVertexCount);
-        
-        glVertexPointer(3, GL_FLOAT, 0, sphereTriangleStripVertices);
-        glNormalPointer(GL_FLOAT, 0, sphereTriangleStripNormals);
-        glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleStripTex);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereTriangleStripVertexCount);
-        
-        glDisable(GL_TEXTURE_2D);
+    // scale
+    glScalef(4+g_zoom, 4+g_zoom, 4+g_zoom);
+    
+    // vertex
+    glEnableClientState(GL_VERTEX_ARRAY );
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    
+    glVertexPointer(3, GL_FLOAT, 0, sphereTriangleFanVertices);
+    glNormalPointer(GL_FLOAT, 0, sphereTriangleFanNormals);
+    glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleFanTex);
+    glDrawArrays(GL_LINE_STRIP, 0, sphereTriangleFanVertexCount);
+    
+    glVertexPointer(3, GL_FLOAT, 0, sphereTriangleStripVertices);
+    glNormalPointer(GL_FLOAT, 0, sphereTriangleStripNormals);
+    glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleStripTex);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereTriangleStripVertexCount);
+    
+    glDisable(GL_TEXTURE_2D);
     glPopMatrix();
+    
+//    // stars
+//    for (int i = 0; i < 100; i++) {
+//        glPushMatrix();
+//        glDisable( GL_TEXTURE_2D );
+//        
+//        glColor4f(1, 1, 1, 0.8);
+//        
+//        // vertex
+//        glEnableClientState(GL_VERTEX_ARRAY );
+//        glEnableClientState(GL_NORMAL_ARRAY);
+//        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+//        
+//        glRotatef(g_stars[i*3], 0, 0, 1);
+//        glRotatef(g_stars[i*3+1], 1, 0, 0);
+//        glTranslatef(0, 0, g_stars[i*3+2]);
+//        glScalef(0.5, 0.5, 0.5);
+//      glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+//      glNormalPointer(GL_FLOAT, 0, normals);
+//      glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+//      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//      
+//      glVertexPointer(3, GL_FLOAT, 0, sphereTriangleFanVertices);
+//      glNormalPointer(GL_FLOAT, 0, sphereTriangleFanNormals);
+//      glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleFanTex);
+//      glDrawArrays(GL_LINE_STRIP, 0, sphereTriangleFanVertexCount);
+//      
+//      glVertexPointer(3, GL_FLOAT, 0, sphereTriangleStripVertices);
+//      glNormalPointer(GL_FLOAT, 0, sphereTriangleStripNormals);
+//      glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleStripTex);
+//      glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereTriangleStripVertexCount);
+//      
+//      glPopMatrix();
+//    }
     
     for (int i = 0; i < messages.size(); i++) {    
         glPushMatrix();
             if (messages[i].cause == 0) {
-                glColor4f(1.0, 0.2, 0.2, 0.05);
+                glColor4f(1.0, 0.2, 0.2, 0.1);
             } else if (messages[i].cause == 1) {
-                glColor4f(0.2, 1.0, 0.2, 0.05);
+                glColor4f(0.2, 1.0, 0.2, 0.1);
             } else {
-                glColor4f(0.2, 0.2, 1.0, 0.05);
+                glColor4f(0.2, 0.2, 1.0, 0.1);
             }
 
             glRotatef(messages[i].position.y, 0, 0, 1);
@@ -352,6 +388,12 @@ void draw() {
             glPopMatrix();
         }
     }
+}
+
+GLfloat rand2f( float a, float b )
+{
+    GLfloat diff = b - a;
+    return a + ((GLfloat)rand() / RAND_MAX)*diff;
 }
 
 
@@ -423,6 +465,12 @@ void draw() {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://youniteapp2.appspot.com/everything"]];
     [[NSURLConnection connectionWithRequest:request delegate:self] retain];
 	return self;
+    
+    for (int i = 0; i < 100; i++) {
+        g_stars[i*3] = rand2f(0, 180);
+        g_stars[i*3+1] = rand2f(0, 360);
+        g_stars[i*3+2] = rand2f(10, 15);
+    }
 }
 
 - (void) playingMessage:(NSDictionary *)message {
