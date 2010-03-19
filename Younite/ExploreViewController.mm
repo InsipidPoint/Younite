@@ -78,9 +78,6 @@ NSString* g_names[g_numTracks];
     // e.g. self.myOutlet = nil;
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 - (void)getAudioData:(id)someData {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSString * index = (NSString *)someData;
@@ -273,9 +270,9 @@ NSString* g_names[g_numTracks];
 
 	//NSLog(@"Finished Connection %d",connection.tag);
 	[connection release];
-	NSString * message =  [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
-	[self setNamefromMessage:message];
-	[self setAudiofromMessage:message];
+//	NSString * message =  [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
+//	[self setNamefromMessage:message];
+//	[self setAudiofromMessage:message];
 	//NSLog(rsltStr);
 }
 
