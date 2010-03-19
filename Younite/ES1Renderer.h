@@ -6,8 +6,10 @@
 //  Copyright Stanford University 2010. All rights reserved.
 //
 
-#import "ESRenderer.h"
+#import <QuartzCore/QuartzCore.h>
 
+#import <OpenGLES/EAGL.h>
+#import <OpenGLES/EAGLDrawable.h>
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
 
@@ -16,7 +18,7 @@ struct Message {
     CGPoint position;
 };
 
-@interface ES1Renderer : NSObject <ESRenderer>
+@interface ES1Renderer : NSObject
 {    
 @private
 	EAGLContext *context;
