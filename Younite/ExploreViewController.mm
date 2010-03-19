@@ -15,6 +15,7 @@ bool g_validAudioTracks[g_numTracks];
 int g_index[g_numTracks];
 int g_size[g_numTracks];
 NSString* g_names[g_numTracks];
+NSDictionary* g_dict[g_numTracks];
 
 @implementation ExploreViewController
 
@@ -46,6 +47,7 @@ NSString* g_names[g_numTracks];
 							 toTarget:self withObject:nil];
 	
 	srand(time(NULL));
+	Global::g_globeView = globeView;
 	//[self explore];
 }
 
@@ -139,6 +141,8 @@ NSString* g_names[g_numTracks];
 					g_index[index] = g_index[index] + 1;
 				}
 				[self smooth:m_playbackBuffer ofSize:newsize];
+				NSLog(@"Pushing Dictionary from index %d", index);
+				Global::pushDictionary(g_dict[index]);
 				Global::loadPlaybackBuffer(m_playbackBuffer, newsize);
 				valid++;
 				if(g_index[index] == g_size[index]) {
@@ -152,8 +156,8 @@ NSString* g_names[g_numTracks];
 		}
 		else {
 			NSString *s = [NSString stringWithFormat:@"%d", index];
-//			[NSThread detachNewThreadSelector:@selector(getAudioData:)
-//									 toTarget:self withObject:s];
+			[NSThread detachNewThreadSelector:@selector(getAudioData:)
+									 toTarget:self withObject:s];
 			
 			//[self getAudioForArray:index];
 			g_validAudioTracks[index] = true;
@@ -337,8 +341,7 @@ NSString* g_names[g_numTracks];
 			[self getCausefromMessage:message], @"Cause", 
 			[loc objectAtIndex:0], @"lat",
 			[loc objectAtIndex:1], @"lon", nil];
-	 
-	[globeView playingMessage:dict];
+	g_dict[index] = [dict retain];
 
 //	Global::loadPlaybackBuffer(m_playbackBuffer, arrayCount);
 //	Global::startPlayback();
