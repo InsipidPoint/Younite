@@ -12,7 +12,8 @@
 
 #import "mopho.h"
 #import "JCRev.h"
-
+#import "GlobeView.h"
+#import <vector>
 // defines
 #define SRATE 8000
 #define FRAMESIZE 256
@@ -31,7 +32,7 @@ public:
 	static void startPlayback();
 	static void stopPlayback();
 	static void tick(Float32 value);
-
+	static void pushDictionary(NSDictionary* dict);
 		
 public:
 	static int mode; // 1 = nothing, 2 = recording, 3 = playing, 4 = exploring
@@ -44,7 +45,9 @@ public:
 	static int g_playbackIndex;
 	static int g_playbackLoadHead;
 	static stk::JCRev* g_reverb;
-	
+	static GlobeView *g_globeView;
+	static vector<NSDictionary *> g_dictionaries;
+	static vector<int> g_times;
 public:
 	static void audio_callback( Float32 * buffer, UInt32 numFrames, void * userData );
 

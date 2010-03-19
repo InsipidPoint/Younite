@@ -19,8 +19,9 @@ int Global::g_index;
 int Global::g_playbackIndex;
 int Global::g_playbackLoadHead;
 stk::JCRev* Global::g_reverb;
-
-
+GlobeView* Global::g_globeView;
+vector<NSDictionary*> Global::g_dictionaries;
+vector<int> Global::g_times;
 // audio cb
 void Global::audio_callback( Float32 * buffer, UInt32 numFrames, void * userData )
 {
@@ -46,6 +47,15 @@ void Global::audio_callback( Float32 * buffer, UInt32 numFrames, void * userData
 				break;
 			case 4:
 				buffer[2*i] = buffer[2*i + 1] = 0.8*g_reverb->tick(g_playbackBuffer[g_playbackIndex]);
+				if (g_times.size() > 0) {
+				int time = g_times[0];
+				if (g_playbackIndex >= time) {
+					NSDictionary* dict = g_dictionaries[0];
+					[g_globeView playingMessage:dict];
+					g_times.erase(g_times.begin());
+					g_dictionaries.erase(g_dictionaries.begin());
+				}
+				}
 				//g_playbackBuffer[g_playbackIndex] = 0;
 				g_playbackIndex++;
 				g_playbackIndex = g_playbackIndex%g_playbackSize;
@@ -144,6 +154,7 @@ Float32* Global::getRecordingBuffer() {
 	return g_recordingBuffer;
 }
 void Global::loadPlaybackBuffer(Float32 *m_playbackBuffer, int arrayCount) {
+	NSLog(@"Loaded Buffer");
 	for(int i=0;i<arrayCount; i++) {
 		g_playbackBuffer[g_playbackLoadHead++] = m_playbackBuffer[i];
 		g_playbackLoadHead %= g_playbackSize;
@@ -160,4 +171,9 @@ void Global::tick(Float32 value) {
 	if(g_playbackLoadHead == 0) {
 		NSLog(@"Rounded Back");
 	}
+}
+void Global::pushDictionary(NSDictionary* dict) {
+	NSLog(@"Pushing Dictionary");
+	g_dictionaries.push_back(dict);
+	g_times.push_back(g_playbackLoadHead);
 }
