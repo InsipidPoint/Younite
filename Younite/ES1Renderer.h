@@ -35,5 +35,6 @@ struct Message {
 
 - (void) render;
 - (BOOL) resizeFromLayer:(CAEAGLLayer *)layer;
+- (void) playingMessage:(NSDictionary *)message;
 
 @end
