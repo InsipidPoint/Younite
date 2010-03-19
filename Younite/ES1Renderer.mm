@@ -13,6 +13,141 @@
 GLuint g_texture[1];
 #define NUM_ENTITIES 64
 
+// =========================================================
+void getSolidSphere(GLfloat **triangleStripVertexHandle,
+                    GLfloat **triangleStripNormalHandle,
+                    GLfloat **triangleStripTexHandle,
+                    GLuint *triangleStripVertexCount,
+                    GLfloat **triangleFanVertexHandle,
+                    GLfloat **triangleFanNormalHandle, 
+                    GLfloat **triangleFanTexHandle, 
+                    GLuint *triangleFanVertexCount,         // On return, will hold the number of vertices contained in
+                    GLfloat radius,                         // The radius of the circle to be drawn
+                    GLuint slices,                          // The number of slices, determines vertical "resolution"
+                    GLuint stacks)                          // the number of stacks, determines horizontal "resolution"
+// =========================================================
+{
+    
+    GLfloat rho, drho, theta, dtheta;
+    GLfloat x, y, z;
+    GLfloat s, ds;
+    GLfloat nsign = 1.0f;
+    drho = M_PI / (GLfloat) stacks;
+    dtheta = 2.0 * M_PI / (GLfloat) slices;
+    
+    GLfloat *triangleStripVertices, *triangleFanVertices;
+    GLfloat *triangleStripNormals, *triangleFanNormals;
+    GLfloat *triangleStripTex, *triangleFanTex;
+    
+    // Calculate the Triangle Fan for the endcaps
+    *triangleFanVertexCount = slices+2;
+    triangleFanVertices = (GLfloat*)calloc(*triangleFanVertexCount, sizeof(GLfloat)*3);
+    triangleFanTex = (GLfloat*)calloc(*triangleFanVertexCount, sizeof(GLfloat)*2);
+    triangleFanVertices[0] = 0.0;
+    triangleFanVertices[1] = 0.0; 
+    triangleFanVertices[2] = nsign * radius;
+    int counter = 1;
+    for (int j = 0; j <= slices; j++) 
+    {
+        theta = (j == slices) ? 0.0 : j * dtheta;
+        x = -sin(theta) * sin(drho);
+        y = cos(theta) * sin(drho);
+        z = nsign * cos(drho);
+        
+        triangleFanTex[counter*2] = theta/(2*M_PI);
+        triangleFanTex[counter*2+1] = drho/M_PI;
+        
+        triangleFanVertices[counter*3] = x * radius;
+        triangleFanVertices[counter*3+1] = y * radius;
+        triangleFanVertices[counter++*3+2] = z * radius;
+    }
+    
+    
+    // Normals for a sphere around the origin are darn easy - just treat the vertex as a vector and normalize it.
+    triangleFanNormals = (GLfloat*)malloc(*triangleFanVertexCount * sizeof(GLfloat)*3);
+    memcpy(triangleFanNormals, triangleFanVertices, *triangleFanVertexCount * sizeof(GLfloat)*3);
+    for (int i = 0; i < *triangleFanVertexCount; i++) {
+        double x = triangleFanNormals[i*3], y = triangleFanNormals[i*3+1], z = triangleFanNormals[i*3+2];
+        double mag = sqrt(x*x+y*y+z*z);
+        triangleFanNormals[i*3] /= mag;
+        triangleFanNormals[i*3+1] /= mag;
+        triangleFanNormals[i*3+2] /= mag;
+        
+//        triangleFanTex[i*2] = asin(triangleFanNormals[i*3])/M_PI + 0.5;
+//        triangleFanTex[i*2+1] = asin(triangleFanNormals[i*3+1])/M_PI + 0.5;
+    }
+    
+    // Calculate the triangle strip for the sphere body
+    *triangleStripVertexCount = (slices + 1) * 2 * stacks;
+    triangleStripVertices = (GLfloat*)calloc(*triangleStripVertexCount, sizeof(GLfloat)*3);
+    triangleStripTex = (GLfloat*)calloc(*triangleStripVertexCount, sizeof(GLfloat)*2);
+    counter = 0;
+    for (int i = 0; i < stacks; i++) {
+        rho = i * drho;
+        
+        s = 0.0;
+        for (int j = 0; j <= slices; j++) 
+        {
+            theta = (j == slices) ? 0.0 : j * dtheta;
+            x = -sin(theta) * sin(rho);
+            y = cos(theta) * sin(rho);
+            z = nsign * cos(rho);
+            
+            triangleStripTex[counter*2] = theta/(2*M_PI);
+            triangleStripTex[counter*2+1] = rho/M_PI;
+            
+            // TODO: Implement texture mapping if texture used
+            //                TXTR_COORD(s, t);
+            triangleStripVertices[counter*3] = x * radius;
+            triangleStripVertices[counter*3+1] = y * radius;
+            triangleStripVertices[counter++*3+2] = z * radius;
+            x = -sin(theta) * sin(rho + drho);
+            y = cos(theta) * sin(rho + drho);
+            z = nsign * cos(rho + drho);
+            
+            triangleStripTex[counter*2] = theta/(2*M_PI);
+            triangleStripTex[counter*2+1] = (rho+drho)/M_PI;
+            
+            //                TXTR_COORD(s, t - dt);
+            s += ds;
+            triangleStripVertices[counter*3] = x * radius;
+            triangleStripVertices[counter*3+1] = y * radius;
+            triangleStripVertices[counter++*3+2] = z * radius;
+        }
+    }
+    
+    triangleStripNormals = (GLfloat*)malloc(*triangleStripVertexCount * sizeof(GLfloat)*3);
+    memcpy(triangleStripNormals, triangleStripVertices, *triangleStripVertexCount * sizeof(GLfloat)*3);
+    for (int i = 0; i < *triangleStripVertexCount; i++) {
+        double x = triangleStripNormals[i*3], y = triangleStripNormals[i*3+1], z = triangleStripNormals[i*3+2];
+        double mag = sqrt(x*x+y*y+z*z);
+        triangleStripNormals[i*3] /= mag;
+        triangleStripNormals[i*3+1] /= mag;
+        triangleStripNormals[i*3+2] /= mag;
+        
+//        triangleStripTex[i*2] = asin(triangleStripNormals[i*3])/M_PI + 0.5;
+//        triangleStripTex[i*2+1] = asin(triangleStripNormals[i*3+1])/M_PI + 0.5;
+    }
+    
+    *triangleStripVertexHandle = triangleStripVertices;
+    *triangleStripNormalHandle = triangleStripNormals;
+    *triangleStripTexHandle = triangleStripTex;
+    *triangleFanVertexHandle = triangleFanVertices;
+    *triangleFanNormalHandle = triangleFanNormals;
+    *triangleFanTexHandle = triangleFanTex;
+}
+
+
+GLfloat    *sphereTriangleStripVertices;
+GLfloat    *sphereTriangleStripNormals;
+GLfloat    *sphereTriangleStripTex;
+GLuint      sphereTriangleStripVertexCount;
+
+GLfloat    *sphereTriangleFanVertices;
+GLfloat    *sphereTriangleFanNormals;
+GLfloat    *sphereTriangleFanTex;
+GLuint      sphereTriangleFanVertexCount;
+
 GLfloat rand2f( float a, float b )
 {
     GLfloat diff = b - a;
@@ -38,79 +173,78 @@ public:
 Entity g_entities[NUM_ENTITIES];
 
 // draw
-void draw()
-{
-    static const GLfloat squareVertices[] = {
-        -0.5f,  -0.5f,
-        0.5f,  -0.5f,
-        -0.5f,   0.5f,
-        0.5f,   0.5f,
-    };
-    
-    static const GLfloat normals[] = {
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1,
-        0, 0, 1
-    };
-    
-    static const GLfloat texCoords[] = {
-        0, 1,
-        1, 1,
-        0, 0,
-        1, 0
-    };
+double d = 0;
+void draw() {
+//    static const GLfloat squareVertices[] = {
+//        -0.5f,  -0.5f,
+//        0.5f,  -0.5f,
+//        -0.5f,   0.5f,
+//        0.5f,   0.5f,
+//    };
+//    
+//    static const GLfloat normals[] = {
+//        0, 0, 1,
+//        0, 0, 1,
+//        0, 0, 1,
+//        0, 0, 1
+//    };
+//    
+//    static const GLfloat texCoords[] = {
+//        0, 1,
+//        1, 1,
+//        0, 0,
+//        1, 0
+//    };
     
     // clear
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     // for each entity
-    for( int i = 0; i < NUM_ENTITIES; i++ )
-    {
         glPushMatrix();
         
         // translate
-        glTranslatef( g_entities[i].loc.x, g_entities[i].loc.y, g_entities[i].loc.z );
-        g_entities[i].loc.z += .12f;
-        GLfloat val = 1 - fabs(g_entities[i].loc.z)/4.1;
-        if( g_entities[i].loc.z > 4 )
-        {
-            g_entities[i].loc.x = rand2f( -1.5, 1.5);
-            g_entities[i].loc.y = rand2f( -2.5, 2.5);
-            g_entities[i].loc.z = rand2f( -4, -3.5);
-        }
+//        glTranslatef( g_entities[i].loc.x, g_entities[i].loc.y, g_entities[i].loc.z );
         
         // rotate
-        glRotatef( g_entities[i].ori.z, 0, 0, 1 );
-        g_entities[i].ori.z += 1.5f;
+    //    glRotatef(180, 1, 0, 0);
+        glRotatef(d, 1, 0, 0);
+        d += 0.5;
         
         // scale
-        glScalef( g_entities[i].sca.x, g_entities[i].sca.y, g_entities[i].sca.z );
-        g_entities[i].sca.y = .8 + .2*::sin(g_entities[i].bounce);
-        g_entities[i].bounce += g_entities[i].bounce_rate;
+        glScalef(4, 4, 4);
         
         // vertex
-        glVertexPointer( 2, GL_FLOAT, 0, squareVertices );
-        glEnableClientState(GL_VERTEX_ARRAY );
+//        glVertexPointer(3, GL_FLOAT, 0, g_globe);
+    glEnableClientState(GL_VERTEX_ARRAY );
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         
         // color
-        glColor4f( g_entities[i].col.x, g_entities[i].col.y, 
-                  g_entities[i].col.z, val );
+    //    glColor4f(1.0, 0, 0, 1);
+    
+    glVertexPointer(3, GL_FLOAT, 0, sphereTriangleFanVertices);
+    glNormalPointer(GL_FLOAT, 0, sphereTriangleFanNormals);
+    glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleFanTex);
+    glDrawArrays(GL_LINE_STRIP, 0, sphereTriangleFanVertexCount);
+    
+    glVertexPointer(3, GL_FLOAT, 0, sphereTriangleStripVertices);
+    glNormalPointer(GL_FLOAT, 0, sphereTriangleStripNormals);
+    glTexCoordPointer(2, GL_FLOAT, 0, sphereTriangleStripTex);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereTriangleStripVertexCount);
         
-        // normal
-        glNormalPointer( GL_FLOAT, 0, normals );
-        glEnableClientState( GL_NORMAL_ARRAY );
-        
+//        // normal
+//        glNormalPointer( GL_FLOAT, 0, g_normal );
+//        glEnableClientState( GL_NORMAL_ARRAY );
+//        
         // texture coordinate
-        glTexCoordPointer( 2, GL_FLOAT, 0, texCoords );
-        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+        
+        
         
         // triangle strip
-        glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+//        glDrawArrays( GL_TRIANGLE_STRIP, 0, g_globe_pts);
         
         glPopMatrix();
-    }
 }
 
 
@@ -148,12 +282,22 @@ void draw()
     // generate texture name
     glGenTextures( 1, &g_texture[0] );
     // bind the texture
-    glBindTexture( GL_TEXTURE_2D, g_texture[0] );
+    glBindTexture( GL_TEXTURE_2D, g_texture[0]);
     // setting parameters
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     // load the texture
-    MoGfx::loadTexture( @"texture", @"png" );
+    MoGfx::loadTexture( @"earthmap1k", @"jpg" );
+    
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask( GL_TRUE );
+    glClearDepthf(1.0f);
+    
+    glEnable   ( GL_CULL_FACE );
+	glShadeModel( GL_SMOOTH );
+    
+    getSolidSphere(&sphereTriangleStripVertices, &sphereTriangleStripNormals, &sphereTriangleStripTex, &sphereTriangleStripVertexCount, &sphereTriangleFanVertices, &sphereTriangleFanNormals, &sphereTriangleFanTex, &sphereTriangleFanVertexCount, 0.5, 50, 50);
     
     // init entities
     for( int i = 0; i < NUM_ENTITIES; i++ )
@@ -191,7 +335,7 @@ void draw()
     
     glMatrixMode(GL_PROJECTION);
     // perspective projection
-    MoGfx::perspective( 70, 2./3., .01, 100 );
+    MoGfx::perspective( 70, 320./411., 1, 100 );
     
     glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

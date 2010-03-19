@@ -12,6 +12,8 @@
 @implementation ExploreViewController
 
 @synthesize nameLabel;
+@synthesize globeView;
+
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -29,6 +31,14 @@
 	responseData = [[NSMutableData data] retain];
 	messageIndex = 0;
 	//[self explore];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [globeView startAnimation];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [globeView stopAnimation];
 }
 
 
@@ -51,11 +61,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-}
-
-
-- (void)dealloc {
-    [super dealloc];
 }
 
 - (void)explore {
@@ -115,5 +120,11 @@
 	//NSLog(rsltStr);
 }
 
+- (void) dealloc {
+	[nameLabel release];
+	[globeView release];
+	
+	[super dealloc];
+}
 
 @end
