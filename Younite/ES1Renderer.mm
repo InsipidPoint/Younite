@@ -14,7 +14,7 @@
 using namespace std;
 
 // global
-GLuint g_texture[2];
+GLuint g_texture[3];
 
 GLfloat g_stars[100*3];
 
@@ -253,6 +253,20 @@ void draw() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
+    glPushMatrix();
+    glEnable( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, g_texture[2] );
+    
+    glColor4f(1.0, 1.0, 1.0, 1);
+    glTranslatef(0, 0, -20);
+    glScalef(50, 50, 50);
+    glVertexPointer(2, GL_FLOAT, 0, squareVertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    glPopMatrix();
+    
     // rotate
     glRotatef(-50+g_yrot, 1, 0, 0);
     glRotatef(110+g_xrot, 0, 0, 1);
@@ -322,11 +336,11 @@ void draw() {
     for (int i = 0; i < messages.size(); i++) {    
         glPushMatrix();
             if (messages[i].cause == 0) {
-                glColor4f(1.0, 0.2, 0.2, 0.1);
+                glColor4f(1.0, 0.2, 0.2, 0.3);
             } else if (messages[i].cause == 1) {
-                glColor4f(0.2, 1.0, 0.2, 0.1);
+                glColor4f(0.2, 1.0, 0.2, 0.3);
             } else {
-                glColor4f(0.2, 0.2, 1.0, 0.1);
+                glColor4f(0.2, 0.2, 1.0, 0.3);
             }
 
             glRotatef(messages[i].position.y, 0, 0, 1);
@@ -449,6 +463,16 @@ GLfloat rand2f( float a, float b )
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     // load the texture
     MoGfx::loadTexture( @"texture", @"png" );
+    
+    // generate texture name
+    glGenTextures( 3, &g_texture[2] );
+    // bind the texture
+    glBindTexture( GL_TEXTURE_2D, g_texture[2] );
+    // setting parameters
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    // load the texture
+    MoGfx::loadTexture( @"stars", @"png" );
     
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);

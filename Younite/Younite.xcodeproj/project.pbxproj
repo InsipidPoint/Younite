@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0D20C65B1150A6C4008E8362 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D20C65A1150A6C4008E8362 /* OpenGLES.framework */; };
 		0D20C65D1150A6C4008E8362 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D20C65C1150A6C4008E8362 /* QuartzCore.framework */; };
+		0D9B5C8F11541B7C007DDF8E /* stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D9B5C8E11541B7C007DDF8E /* stars.png */; };
 		0DBDE7E31152CC2300E07197 /* earthmap1k.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0DBDE7E21152CC2300E07197 /* earthmap1k.jpg */; };
 		0DD53CB41151E9C2002DCA31 /* GlobeView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0DD53CB31151E9C2002DCA31 /* GlobeView.mm */; };
 		0DD53CC21151E9DE002DCA31 /* ES1Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0DD53CC01151E9DE002DCA31 /* ES1Renderer.mm */; };
@@ -169,6 +170,7 @@
 /* Begin PBXFileReference section */
 		0D20C65A1150A6C4008E8362 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		0D20C65C1150A6C4008E8362 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		0D9B5C8E11541B7C007DDF8E /* stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stars.png; sourceTree = "<group>"; };
 		0DBDE7E21152CC2300E07197 /* earthmap1k.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = earthmap1k.jpg; sourceTree = "<group>"; };
 		0DD53CB21151E9C2002DCA31 /* GlobeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobeView.h; sourceTree = "<group>"; };
 		0DD53CB31151E9C2002DCA31 /* GlobeView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GlobeView.mm; sourceTree = "<group>"; };
@@ -526,6 +528,7 @@
 				BCEB69E911481B66001B6DF5 /* ContributeViewController.h */,
 				BCEB69EA11481B66001B6DF5 /* ContributeViewController.mm */,
 				BCEB69EB11481B66001B6DF5 /* ContributeViewController.xib */,
+				0D9B5C8E11541B7C007DDF8E /* stars.png */,
 				0DBDE7E21152CC2300E07197 /* earthmap1k.jpg */,
 				0DD53D1E1152B527002DCA31 /* texture.png */,
 				28AD73870D9D96C1002E5188 /* MainWindow.xib */,
@@ -963,6 +966,7 @@
 				BCEB6B8E11484183001B6DF5 /* ExploreViewController.xib in Resources */,
 				0DD53D1F1152B527002DCA31 /* texture.png in Resources */,
 				0DBDE7E31152CC2300E07197 /* earthmap1k.jpg in Resources */,
+				0D9B5C8F11541B7C007DDF8E /* stars.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
